@@ -1,0 +1,5 @@
+# Ignore executables
+**/*.exe
+**/*.out
+**/*.bin
+.vscode
