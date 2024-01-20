@@ -2,6 +2,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include "../utils/file_parsing.h"
+#include "./queue.h"
+
 typedef struct BinaryTree BinaryTree;
 struct BinaryTree{
     char data;
@@ -52,16 +54,61 @@ BinaryTree* addWordToBinaryTree(char *word, BinaryTree* binary_tree){
   return binary_tree;
 }
 
-void test (){
-    BinaryTree* bt;
-    bt=addWordToBinaryTree("hi",bt);
-    bt=addWordToBinaryTree("hello",bt);
-    bt=addWordToBinaryTree("here",bt);
-    bt=addWordToBinaryTree("ear",bt);
-    bt=addWordToBinaryTree("near",bt);
-    bt=addWordToBinaryTree("dear",bt);
-    
+int search_word(char *word, BinaryTree *binary_tree, Queue* q){
+  if((binary_tree == NULL)||(word[0] < binary_tree->data)) return 0;
+  printf("%c \t",binary_tree->data);
+  enqueue(q, binary_tree);
+  if(word[0] == binary_tree->data){
+    if(word[0] == '\0') return 1;
+    return search_word(word+1, binary_tree->left_child, q);
+  }
+  return search_word(word, binary_tree->right_child,q);
 }
+
+
+void letter_index(Queue *q, char c){
+    int i=-1;
+    int exist=-1;
+    QueueNode *p = q->front;
+    while(p->next!=NULL){
+        if(p->next->node_data==p->left_child_data){
+            i++;
+            if(p->node_data==c) {
+                printf("letter %c exists at index %d\n",c,i);
+                exist=1;
+            }
+        }
+        p=p->next;
+    }
+    if(exist==-1){
+        printf("letter %c does not exist\n",c);
+    }
+}
+
+
+// void test (){
+//     BinaryTree* bt=NULL; 
+//     const char *words[] = {"do", "desert", "ce","ces","ci","casse"};
+//     for(int i=0; i < sizeof(words) / sizeof(words[0]);i++){
+//         bt=addWordToBinaryTree(words[i],bt);
+//     }  
+//     char letters[] = {'c', 'd', 'e', 'i', 'o', 's','a'}; 
+//     for(int i=0; i < sizeof(words) / sizeof(words[0]);i++){
+//         printf("-------------------------\n");
+//         printf("Word = %s \n",words[i]);
+//         Queue* q = (Queue*)malloc(sizeof(Queue));
+//         q->front = q->rear = NULL;
+//         printf("path: ");
+//         int word_exist = search_word(words[i],bt,q);
+//         printf("\n");
+//         if(word_exist!=0){
+//             for(int i=0; i < sizeof(letters) / sizeof(letters[0]);i++){
+//                 letter_index(q,letters[i]);
+//             }
+//         }
+//     }
+// }
+
 // --------------------------------------------hajji--------------------------
 
 
