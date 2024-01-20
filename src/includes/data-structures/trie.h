@@ -15,7 +15,35 @@ ListTrie initiliazeListTrie(int size);
 int getAlphabeticalOrder(char c);
 void addWordToTrie(char* word, int i, int length, Trie* trie);
 int wordExists(char * word, int i, int length, Trie* trie);
+Trie* getFirstRightLeftChild (int tab_index, int j, Trie** array_node_sons);
+int isNodeLeaf(int i, Trie** array_node_sons);
 
+// is the variable i was passed initially as 0, then the function is getFirstLeftChild
+// if the variable > 0, it means that the main program calling the function is searching for the index
+// of the next (first) non null sibling i.e it's a getFirstRightChild
+Trie* getFirstRightLeftChild (int i, int j, Trie** array_node_sons) {
+    if (array_node_sons[i] != NULL) {
+        return array_node_sons[i];
+    }
+    if (i>=(26-j) && array_node_sons[i] == NULL){
+        return NULL;
+    }
+    if (array_node_sons[i] == NULL && i<(26-j)) {
+        return getFirstRightLeftChild(i+1, j,array_node_sons);
+    }
+}
+
+// this is a function that verifies whether a Node in the genereic tree is a leaf or not, i.e 
+// all its children are NULL
+int isNodeLeaf(int i,Trie** array_node_sons) {
+    if (i==26 && array_node_sons[i] != NULL ) {
+        return 1;
+    }
+    if (array_node_sons[i] != NULL) {
+        return 0; // NOT a leaf
+    }
+    return isNodeLeaf(i+1,array_node_sons);
+}
 
 ListTrie initiliazeListTrie(int size) {
     Trie** array = (Trie**)malloc(size * sizeof(Trie*));
@@ -42,7 +70,7 @@ int wordExists(char * word, int i, int length, Trie* trie) {
     if(i==length-1 && trie->array_node_sons[0]== NULL){
         return 0;
     }
-    if (i==length-1 && trie->array_node_sons[0]->data == '0') {
+    if (i==length-1 && trie->array_node_sons[0]->data == '\0') {
         return 1;
     }
     if (trie== NULL) {
@@ -55,7 +83,7 @@ int wordExists(char * word, int i, int length, Trie* trie) {
 
 void addWordToTrie(char * word, int i, int length, Trie* trie) {
     if(i==length || length==i==1) {
-        Trie* trieP = initiliazeTrie('0');
+        Trie* trieP = initiliazeTrie('\0');
         trie->array_node_sons[0]= trieP;
     }
     else {
@@ -75,6 +103,10 @@ void addWordToTrie(char * word, int i, int length, Trie* trie) {
 
 
 int getAlphabeticalOrder(char c) {
+    if(c=='\0') {
+        return 0;
+    }
+    c=toupper(c);
     // Ensure the character is an uppercase letter
     if (c >= 'A' && c <= 'Z') {
         // Subtract the ASCII value of 'A' to get the alphabetical order
