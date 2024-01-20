@@ -1,6 +1,7 @@
 #pragma once
 #include<stdio.h>
 #include<stdlib.h>
+#include "../utils/file_parsing.h"
 #include "./queue.h"
 
 typedef struct BinaryTree BinaryTree;
