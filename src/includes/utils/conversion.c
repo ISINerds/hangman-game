@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include "../data-structures/trie.h"
 #include "../data-structures/binary_tree.h"
+//int counter=0;
 
 BinaryTree* intiliazeBinaryTree(char data,BinaryTree* lc, BinaryTree* rc) {
     BinaryTree* node = (BinaryTree*) malloc(sizeof(BinaryTree));
@@ -12,6 +13,7 @@ BinaryTree* intiliazeBinaryTree(char data,BinaryTree* lc, BinaryTree* rc) {
         printf("Error while allocating a Binary Tree \n");
         return NULL;
     }
+    node->id= counter++;
     node->data=data;
     node->left_child= lc; 
     node->right_child= rc; 
@@ -191,8 +193,8 @@ int main() {
 
     BinaryTree* BT =convertTrieListToBT(dict.array_roots);
     
-    recursiveBFS(BT);
-    
+    //recursiveBFS(BT);
+    generateImageFromBinaryTree(BT);
     free(BT);
     free(dict.array_roots);
     return 0;
