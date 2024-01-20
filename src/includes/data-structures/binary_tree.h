@@ -20,6 +20,7 @@ BinaryTree* createNode(char data, BinaryTree* left_child, BinaryTree* right_chil
   BinaryTree* node;
   node = (BinaryTree*) malloc(sizeof(BinaryTree));
   node->data = data;
+  node->id=counter++;
   node->left_child = left_child;
   node->right_child = right_child;
   return node;
@@ -65,7 +66,7 @@ void test (){
 
 BinaryTree* addWords(Words words,BinaryTree* root){
     for(int i=0;i<words.words_array_size;i++){
-        root = addWord(root,words.words_array[i]);   
+        root = addWordToBinaryTree(words.words_array[i],root);
     }
     return root;
 }
