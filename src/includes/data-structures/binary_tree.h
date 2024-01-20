@@ -2,7 +2,6 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include "../utils/file_parsing.h"
-#include "./queue.h"
 
 typedef struct BinaryTree BinaryTree;
 struct BinaryTree{
@@ -12,6 +11,7 @@ struct BinaryTree{
     BinaryTree* right_child;
 };
 int counter=0;
+#include "./queue.h"
 // ------------------------------functions signitures------------------------
 BinaryTree* addWord(BinaryTree* root,const char* word);
 void printBinaryTree(BinaryTree* root,int* cc);

@@ -3,8 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "../data-structures/trie.h"
-#include "../data-structures/binary_tree.h"
-//int counter=0;
+
 
 BinaryTree* intiliazeBinaryTree(char data,BinaryTree* lc, BinaryTree* rc) {
     BinaryTree* node = (BinaryTree*) malloc(sizeof(BinaryTree));
@@ -19,40 +18,6 @@ BinaryTree* intiliazeBinaryTree(char data,BinaryTree* lc, BinaryTree* rc) {
     node->right_child= rc; 
     return node;
 }
-
-
-int height(struct BinaryTree* root) {
-    if (root == NULL)
-        return 0;
-
-    int left_height = height(root->left_child);
-    int right_height = height(root->right_child);
-
-    return (left_height > right_height) ? (left_height + 1) : (right_height + 1);
-}
-
-// Function to print nodes at the given level
-void printLevel(struct BinaryTree* root, int level) {
-    if (root == NULL)
-        return;
-
-    if (level == 1)
-        printf("%c ", root->data);
-    else if (level > 1) {
-        printLevel(root->left_child, level - 1);
-        printLevel(root->right_child, level - 1);
-    }
-}
-
-// Function to perform recursive Breadth-First Search
-void recursiveBFS(struct BinaryTree* root) {
-    int h = height(root);
-    for (int i = 1; i <= h; i++)
-        printLevel(root, i);
-}
-
-
-
 BinaryTree* convertTrieToBT (Trie* trie) {
     if (trie != NULL) {
 
