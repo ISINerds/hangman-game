@@ -44,9 +44,9 @@ Words parseFile(const char *file_path) {
             // remove the newline character if exist
             size_t length = strlen(words.words_array[i]);
             if (words.words_array[i][length - 1] == '\n') {
-                words.words_array[i][length - 1] = '\0';
+                words.words_array[i][length - 2] = '\0';
             }
-            printf("%s\n",words.words_array[i]);
+            // printf("%s\n",words.words_array[i]);
         }
 
         fclose(file);
