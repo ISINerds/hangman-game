@@ -22,6 +22,7 @@ BinaryTree* createNode(char data, BinaryTree* left_child, BinaryTree* right_chil
   BinaryTree* node;
   node = (BinaryTree*) malloc(sizeof(BinaryTree));
   node->data = data;
+  node->id=counter++;
   node->left_child = left_child;
   node->right_child = right_child;
   return node;
@@ -109,33 +110,47 @@ void letter_index(Queue *q, char c){
 
 // --------------------------------------------hajji--------------------------
 
-BinaryTree* addWordTest(BinaryTree* root,const char* word){
-    if(root==NULL){
-        if(word[0]!='\0'){
-            root=(BinaryTree*)malloc(sizeof(BinaryTree));
-            root->data=word[0];
-            root->id=counter++;
-            root->right_child=NULL;
-            root->left_child=addWord(root->left_child,word+1);
-            return root;
-        }else{
-            root=(BinaryTree*)malloc(sizeof(BinaryTree));
-            root->data=word[0];
-            root->id=counter++;
-            root->right_child=NULL;
-            root->left_child=NULL;
-            return root;
-        }
-    }else{
-        if(word[0]==root->data){
-            root->left_child=addWord(root->left_child,word+1);
-            return root;
-        }else{
-            root->right_child=addWord(root->right_child,word);
-            return root;
-        }
+
+BinaryTree* addWords(Words words,BinaryTree* root){
+    for(int i=0;i<words.words_array_size;i++){
+        root = addWordToBinaryTree(words.words_array[i],root);
     }
+    return root;
 }
+
+BinaryTree* removeWord(BinaryTree* root,BinaryTree* parent,const char* word){
+    if((root == NULL)||(root->data > word[0])) return root;
+    if(word[0] == root->data){
+        root->left_child=removeWord(root->left_child,root,word+1);
+        printf("me = %c, parent = %c\n",root->data,parent->data);
+        if(parent->left_child==root){
+            if(root->left_child==NULL && root->right_child==NULL){
+                parent->left_child=NULL;
+                free(root);
+                return NULL;
+            }else if(root->left_child==NULL){
+                parent->left_child=root->right_child;
+                free(root);
+                return parent->left_child;
+            }
+        }else{
+            if(root->left_child==NULL && root->right_child==NULL){
+                parent->right_child=NULL;
+                free(root);
+                return NULL;
+            }else if(root->left_child==NULL){
+                parent->right_child=root->right_child;
+                free(root);
+                return parent->right_child;
+            }
+        }
+        // root->data='-';
+        return root;
+    }
+    root->right_child=removeWord(root->right_child,root,word);
+    return root;
+}
+
 void printBinaryTreeToFile(FILE* file, BinaryTree* root,int* cc){
     if(root->left_child!=NULL){
         if(root->data=='\0'){
