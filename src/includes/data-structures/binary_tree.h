@@ -201,18 +201,27 @@ void printBinaryTreeToFile(FILE* file, BinaryTree* root,int* cc){
     if(root->left_child!=NULL)printBinaryTreeToFile(file,root->left_child,cc);
     if(root->right_child!=NULL)printBinaryTreeToFile(file,root->right_child,cc);
 }
-void generateImageFromBinaryTree(BinaryTree* root){
-    FILE *file = fopen("tree.dot", "w");
+void generateImageFromBinaryTree(BinaryTree *root, const char *output_file_name_without_extension) {
+    char output_file_name[256];
+    snprintf(output_file_name, sizeof(output_file_name), "%s.dot", output_file_name_without_extension);
+
+    FILE *file = fopen(output_file_name, "w");
     if (file == NULL) {
         fprintf(stderr, "Error opening file.\n");
         return;
     }
-    int cc=0;
-    fprintf(file,"digraph G {\n");
+
+    int cc = 0;
+    fprintf(file, "digraph G {\n");
     printBinaryTreeToFile(file, root, &cc);
-    fprintf(file,"}");
+    fprintf(file, "}");
     fclose(file);
-    int result = system("dot tree.dot | gvpr -c -ftree.gv | neato -n -Tsvg -o trie.svg");
+
+    // Construct the command with the provided output_file_name
+    char command[500];
+    snprintf(command, sizeof(command), "dot %s | gvpr -c -f tree.gv | neato -n -Tsvg -o %s.svg", output_file_name, output_file_name_without_extension);
+
+    int result = system(command);
     if (result == -1) {
         perror("Error executing command");
     }

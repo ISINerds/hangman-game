@@ -37,7 +37,7 @@ int main(void){
     Queue* q = (Queue*)malloc(sizeof(Queue));
     q->front = q->rear = NULL;
     printf("business = %d\n",search_word("businesss",BT,q));
-    generateImageFromBinaryTree(BT);
+    generateImageFromBinaryTree(BT,"cool_tree");
     //recursiveBFS(BT);
     free(BT);
     free(dict.array_roots);
