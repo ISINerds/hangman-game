@@ -13,7 +13,7 @@ struct BinaryTree{
 int counter=0;
 #include "./queue.h"
 // ------------------------------functions signitures------------------------
-BinaryTree* addWord(BinaryTree* root,const char* word);
+BinaryTree* addWordToBinaryTree(const char* word,BinaryTree* root);
 void printBinaryTree(BinaryTree* root,int* cc);
 
 // -------------------------------end functions signitures---------------------
@@ -29,14 +29,19 @@ BinaryTree* createNode(char data, BinaryTree* left_child, BinaryTree* right_chil
   return node;
 }
 
-BinaryTree* createBinaryTree(char *word){
+BinaryTree* createBinaryTreeFromWord(const char *word){
   if(word[0] == '\0'){
     return createNode('\0',NULL,NULL);
   } 
-  return createNode(word[0],createBinaryTree(word+1),NULL);
+  return createNode(word[0],createBinaryTreeFromWord(word+1),NULL);
 }
 
-BinaryTree* addWordToBinaryTree(char *word, BinaryTree* binary_tree){
+BinaryTree* createBinaryTree(const char *word){
+    if(*word == '\0')return NULL;
+    else return createBinaryTreeFromWord(word);
+}
+
+BinaryTree* addWordToBinaryTree(const char *word, BinaryTree* binary_tree){
   if(binary_tree == NULL){
     return createBinaryTree(word);
   } 
@@ -53,6 +58,16 @@ BinaryTree* addWordToBinaryTree(char *word, BinaryTree* binary_tree){
   binary_tree->right_child = addWordToBinaryTree(word, binary_tree->right_child);
   return binary_tree;
 }
+
+int searchWordInBT(BinaryTree* root,char *word){
+  if((root == NULL)||(root->data > word[0])) return 0;
+  if(word[0] == root->data){
+    if(word[0] == '\0') return 1;
+    return searchWordInBT(root->left_child,word+1);
+  }
+  return searchWordInBT(root->right_child,word);
+}
+
 
 int search_word(char *word, BinaryTree *binary_tree, Queue* q){
   if((binary_tree == NULL)||(word[0] < binary_tree->data)) return 0;
@@ -123,7 +138,7 @@ BinaryTree* removeWord(BinaryTree* root,BinaryTree* parent,const char* word){
     if((root == NULL)||(root->data > word[0])) return root;
     if(word[0] == root->data){
         root->left_child=removeWord(root->left_child,root,word+1);
-        printf("me = %c, parent = %c\n",root->data,parent->data);
+        // printf("me = %c, parent = %c\n",root->data,parent->data);
         if(parent->left_child==root){
             if(root->left_child==NULL && root->right_child==NULL){
                 parent->left_child=NULL;
@@ -201,14 +216,14 @@ void printBinaryTreeToFile(FILE* file, BinaryTree* root,int* cc){
     if(root->left_child!=NULL)printBinaryTreeToFile(file,root->left_child,cc);
     if(root->right_child!=NULL)printBinaryTreeToFile(file,root->right_child,cc);
 }
-void generateImageFromBinaryTree(BinaryTree *root, const char *output_file_name_without_extension) {
+int generateImageFromBinaryTree(BinaryTree *root, const char* output_file_name_without_extension, const char* tree_parser_path) {
     char output_file_name[256];
     snprintf(output_file_name, sizeof(output_file_name), "%s.dot", output_file_name_without_extension);
 
     FILE *file = fopen(output_file_name, "w");
     if (file == NULL) {
         fprintf(stderr, "Error opening file.\n");
-        return;
+        return EXIT_FAILURE;
     }
 
     int cc = 0;
@@ -219,12 +234,23 @@ void generateImageFromBinaryTree(BinaryTree *root, const char *output_file_name_
 
     // Construct the command with the provided output_file_name
     char command[500];
-    snprintf(command, sizeof(command), "dot %s | gvpr -c -f tree.gv | neato -n -Tsvg -o %s.svg", output_file_name, output_file_name_without_extension);
+    snprintf(command, sizeof(command), "dot %s | gvpr -c -f %s | neato -n -Tsvg -o %s.svg", output_file_name,tree_parser_path ,output_file_name_without_extension);
 
     int result = system(command);
     if (result == -1) {
         perror("Error executing command");
+        return EXIT_FAILURE;
     }
+    char command2[500];
+    snprintf(command2, sizeof(command2), "rm %s", output_file_name);
+
+    int result2 = system(command2);
+    if (result2 == -1) {
+        perror("Error executing command");
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
 }
 // #include<stdio.h>
 // #include "./includes/data-structures/binary_tree.h"

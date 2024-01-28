@@ -2,4 +2,7 @@
 **/*.exe
 **/*.out
 **/*.bin
+external/
+tests/bin/
+tests/images/
 .vscode
