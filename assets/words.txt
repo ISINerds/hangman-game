@@ -98,3 +98,6 @@ air
 teacher
 force
 education
+headmaster
+conscious 
+controversial

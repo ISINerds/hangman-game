@@ -2,13 +2,81 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-typedef struct{
-  char** words_array;
-  int words_array_size;
-}Words;
+#include <ctype.h>
 
-Words parseFile(const char *file_path) {
-    Words words;
+typedef struct {
+    char** words_array;
+    int words_array_size;
+} Words;
+
+
+typedef enum {
+    EASY,
+    MEDIUM,
+    HARD
+} Difficulty;
+typedef struct {
+    char* word;
+    Difficulty difficulty;
+} WordScore;
+typedef struct {
+    WordScore* words_array;
+    int words_array_size;
+} WordList;
+
+const int easy_bound = 5;
+const int medium_bound = 7;
+
+
+float averageCharOccurrence(const char* word) {
+    if (word == NULL || *word == '\0') {
+        return 0.0;
+    }
+
+    int word_length = strlen(word);
+    int unique_indexes = 0; //  an integer in the binary format as 1 bit for each index
+    int unique_count = 0;
+    for (const char* ptr = word; *ptr != '\0'; ++ptr) {
+        char c = tolower(*ptr);
+        if ((unique_indexes & (1 << (c - 'a'))) == 0) {
+            unique_indexes |= (1 << (c - 'a'));
+            unique_count++;
+        }
+    }
+
+    return (float)word_length/unique_count;
+}
+
+int nbVowels(const char* word) {
+    if (word == NULL || *word == '\0') {
+        return 0;
+    }
+
+    int nb_vowels = 0;
+
+    while (*word != '\0') {
+        char c = tolower(*word);
+        if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+            nb_vowels++;
+        }
+        word++;
+    }
+
+    return nb_vowels;
+}
+
+float calculateDifficulty(const char* word){
+    int length = strlen(word);
+    int nb_vowels = nbVowels(word);
+    float avg_char_occ = averageCharOccurrence(word);
+    // float score = (length + 0.5*avg_char_occ)*nb_vowels/10;
+    float score = (length +nb_vowels)/avg_char_occ;
+    // printf("%s -- %.2f\n",word,score);
+    return score;
+}
+
+WordList parseFile(const char *file_path) {
+    WordList words;
     FILE *file = fopen(file_path, "r");
 
     if (file == NULL) {
@@ -31,7 +99,7 @@ Words parseFile(const char *file_path) {
         fseek(file, 0, SEEK_SET);
             
         
-        words.words_array = (char **)malloc(words.words_array_size * sizeof(char *));
+        words.words_array = (WordScore*)malloc(words.words_array_size * sizeof(WordScore));
         if (words.words_array== NULL) {
             printf("Error allocating memory");
             exit(EXIT_FAILURE);
@@ -39,14 +107,20 @@ Words parseFile(const char *file_path) {
 
         for (int i = 0; i < words.words_array_size; i++) {
             size_t buffer_size = 0;
-            getline(&words.words_array[i], &buffer_size, file);
+            getline(&words.words_array[i].word, &buffer_size, file);
 
             // remove the newline character if exist
-            size_t length = strlen(words.words_array[i]);
-            if (words.words_array[i][length - 1] == '\n') {
-                words.words_array[i][length - 2] = '\0';
+            size_t length = strlen(words.words_array[i].word);
+            if (words.words_array[i].word[length - 1] == '\n') {
+                words.words_array[i].word[length - 1] = '\0';
             }
-            // printf("%s\n",words.words_array[i]);
+            float score = calculateDifficulty(words.words_array[i].word);
+            if(score>0 && score<=easy_bound) words.words_array[i].difficulty= EASY;
+            else if (score>easy_bound && score<=medium_bound) words.words_array[i].difficulty= MEDIUM;
+            else if (score>medium_bound) words.words_array[i].difficulty= HARD;
+            printf("%s -- %d\n",words.words_array[i].word,words.words_array[i].difficulty);
+            // printf("%s -- %.2f\n",words.words_array[i].word,score);
+
         }
 
         fclose(file);
@@ -57,9 +131,9 @@ Words parseFile(const char *file_path) {
    
 }
 
-void freeWordsArray(Words words){
+void freeWordsArray(WordList words){
     for (int i=0; i<words.words_array_size; i++){
-        free(words.words_array[i]);
+        free(words.words_array[i].word);
     }
     free(words.words_array);
 }
@@ -68,3 +142,5 @@ void freeWordsArray(Words words){
     // Words words = parseFile("./assets/words.txt");
     // printf("%d",words.words_array_size);
     // freeWordsArray(words);
+
+//--------------
