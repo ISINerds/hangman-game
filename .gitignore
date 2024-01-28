@@ -5,4 +5,5 @@
 external/
 tests/bin/
 tests/images/
+build/
 .vscode
