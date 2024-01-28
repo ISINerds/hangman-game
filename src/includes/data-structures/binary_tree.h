@@ -84,46 +84,46 @@ int* getletterIndex(int * array_pos ,int index, char letter, char* word, BinaryT
 
 }
 
-int searchWordInBT(BinaryTree* root,char *word){
+int search_word(BinaryTree* root,char *word){
   if((root == NULL)||(root->data > word[0])) return 0;
   if(word[0] == root->data){
     if(word[0] == '\0') return 1;
-    return searchWordInBT(root->left_child,word+1);
+    return search_word(root->left_child,word+1);
   }
-  return searchWordInBT(root->right_child,word);
+  return search_word(root->right_child,word);
 }
 
 
-int search_word(char *word, BinaryTree *binary_tree, Queue* q){
-  if((binary_tree == NULL)||(word[0] < binary_tree->data)) return 0;
-  printf("%c \t",binary_tree->data);
-  enqueue(q, binary_tree);
-  if(word[0] == binary_tree->data){
-    if(word[0] == '\0') return 1;
-    return search_word(word+1, binary_tree->left_child, q);
-  }
-  return search_word(word, binary_tree->right_child,q);
-}
+// int search_word(char *word, BinaryTree *binary_tree, Queue* q){
+//   if((binary_tree == NULL)||(word[0] < binary_tree->data)) return 0;
+//   printf("%c \t",binary_tree->data);
+//   enqueue(q, binary_tree);
+//   if(word[0] == binary_tree->data){
+//     if(word[0] == '\0') return 1;
+//     return search_word(word+1, binary_tree->left_child, q);
+//   }
+//   return search_word(word, binary_tree->right_child,q);
+// }
 
 
-void letter_index(Queue *q, char c){
-    int i=-1;
-    int exist=-1;
-    QueueNode *p = q->front;
-    while(p->next!=NULL){
-        if(p->next->node_data==p->left_child_data){
-            i++;
-            if(p->node_data==c) {
-                printf("letter %c exists at index %d\n",c,i);
-                exist=1;
-            }
-        }
-        p=p->next;
-    }
-    if(exist==-1){
-        printf("letter %c does not exist\n",c);
-    }
-}
+// void letter_index(Queue *q, char c){
+//     int i=-1;
+//     int exist=-1;
+//     QueueNode *p = q->front;
+//     while(p->next!=NULL){
+//         if(p->next->node_data==p->left_child_data){
+//             i++;
+//             if(p->node_data==c) {
+//                 printf("letter %c exists at index %d\n",c,i);
+//                 exist=1;
+//             }
+//         }
+//         p=p->next;
+//     }
+//     if(exist==-1){
+//         printf("letter %c does not exist\n",c);
+//     }
+// }
 
 
 // void test (){
@@ -152,9 +152,9 @@ void letter_index(Queue *q, char c){
 // --------------------------------------------hajji--------------------------
 
 
-BinaryTree* addWords(Words words,BinaryTree* root){
+BinaryTree* addWords(WordList words,BinaryTree* root){
     for(int i=0;i<words.words_array_size;i++){
-        root = addWordToBinaryTree(words.words_array[i],root);
+        root = addWordToBinaryTree(words.words_array[i].word,root);
     }
     return root;
 }

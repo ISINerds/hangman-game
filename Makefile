@@ -15,9 +15,6 @@ $(TEST)/bin:
 $(TEST)/images:
 	mkdir $@
 
-$(BUILD)/:
-	mkdir $@
-
 $(EXTERNAL):
 	mkdir $@
 
@@ -27,12 +24,16 @@ install_raylib:$(EXTERNAL)
 	cd ./external && mkdir raylib-5.0 && cd raylib-5.0 && curl -L $(raylib_URL_LIB) -o raylib-5.0.tar.gz && tar -xzvf raylib-5.0.tar.gz --strip-components=1 && rm raylib-5.0.tar.gz
 # build_criterion:
 # 	cd ./external/criterion-v2.3.3 && mkdir build && cd build/ && cmake .. && make -j5
+# @RAYLIB_PATH="./build_raylib/_deps/raylib-build/raylib"; \
+# gcc -I"$$RAYLIB_PATH/include" -L"$$RAYLIB_PATH" -o ./build/main ./src/main.c -lraylib -lm -lglfw -ldl -lpthread -w
 
-build:
-	@$(CC) -ggdb -o hangman_game src/main.c
-
+build: src/main.c
+	@mkdir -p build/
+	RAYLIB_PATH="./external/raylib-5.0/lib"; \
+	gcc -I"./external/raylib-5.0/include" -L"./external/raylib-5.0/lib" -o ./build/main src/main.c -lraylib -lm -lglfw -ldl -lpthread -w
 run:
-	@./hangman_game
+	export LD_LIBRARY_PATH=./external/raylib-5.0/lib; \
+	./build/main
 
 test: $(TEST)/bin $(TESTBINS) $(TEST)/images
 	export LD_LIBRARY_PATH=./external/criterion-v2.3.3/lib/; \
