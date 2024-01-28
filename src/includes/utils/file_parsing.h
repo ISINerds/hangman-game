@@ -9,10 +9,6 @@ typedef struct {
     int words_array_size;
 } Words;
 
-typedef struct {
-    char character;
-    int count;
-} CharCount;
 
 typedef enum {
     EASY,
@@ -28,14 +24,9 @@ typedef struct {
     int words_array_size;
 } WordList;
 
-int findCharIndex(CharCount* chars_table, int table_size, char c) {
-    for (int i = 0; i < table_size; ++i) {
-        if (chars_table[i].character == c) {
-            return i; 
-        }
-    }
-    return -1;
-}
+const int easy_bound = 5;
+const int medium_bound = 7;
+
 
 float averageCharOccurrence(const char* word) {
     if (word == NULL || *word == '\0') {
@@ -43,38 +34,17 @@ float averageCharOccurrence(const char* word) {
     }
 
     int word_length = strlen(word);
-    CharCount* chars_table = (CharCount*)malloc(word_length * sizeof(CharCount));
-    
-    if (chars_table == NULL) {
-        printf("Error allocating memory");
-        exit(EXIT_FAILURE);
-    }
-
-    int table_size= 0;
-
+    int unique_indexes = 0; //  an integer in the binary format as 1 bit for each index
+    int unique_count = 0;
     for (const char* ptr = word; *ptr != '\0'; ++ptr) {
-
-        int char_index = findCharIndex(chars_table, table_size, *ptr);
-
-        if (char_index == -1) {
-            // add the character when not found 
-            chars_table[table_size].character = *ptr;
-            chars_table[table_size].count = 1;
-            table_size++;
-        } else {
-            chars_table[char_index].count++;
+        char c = tolower(*ptr);
+        if ((unique_indexes & (1 << (c - 'a'))) == 0) {
+            unique_indexes |= (1 << (c - 'a'));
+            unique_count++;
         }
     }
 
-   
-    float totalOccurrence = 0.0;
-    for (int i = 0; i < table_size; i++) {
-        totalOccurrence += (float)chars_table[i].count;
-    }
-
-    free(chars_table); 
-
-    return totalOccurrence/table_size;
+    return (float)word_length/unique_count;
 }
 
 int nbVowels(const char* word) {
@@ -95,13 +65,14 @@ int nbVowels(const char* word) {
     return nb_vowels;
 }
 
-void calculateDifficulty(const char* word){
+float calculateDifficulty(const char* word){
     int length = strlen(word);
     int nb_vowels = nbVowels(word);
     float avg_char_occ = averageCharOccurrence(word);
     // float score = (length + 0.5*avg_char_occ)*nb_vowels/10;
     float score = (length +nb_vowels)/avg_char_occ;
-    printf("%s -- %.2f\n",word,score);
+    // printf("%s -- %.2f\n",word,score);
+    return score;
 }
 
 WordList parseFile(const char *file_path) {
@@ -143,10 +114,13 @@ WordList parseFile(const char *file_path) {
             if (words.words_array[i].word[length - 1] == '\n') {
                 words.words_array[i].word[length - 1] = '\0';
             }
-            words.words_array[i].difficulty= EASY;
-            //easy 0..3 // meduim 3..5 // hard 6+
-            //TO_DO 
-            calculateDifficulty(words.words_array[i].word);
+            float score = calculateDifficulty(words.words_array[i].word);
+            if(score>0 && score<=easy_bound) words.words_array[i].difficulty= EASY;
+            else if (score>easy_bound && score<=medium_bound) words.words_array[i].difficulty= MEDIUM;
+            else if (score>medium_bound) words.words_array[i].difficulty= HARD;
+            printf("%s -- %d\n",words.words_array[i].word,words.words_array[i].difficulty);
+            // printf("%s -- %.2f\n",words.words_array[i].word,score);
+
         }
 
         fclose(file);
