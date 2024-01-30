@@ -75,6 +75,13 @@ float calculateDifficulty(const char* word){
     return score;
 }
 
+Difficulty getWordDifficulty(const char *word){
+    float score = calculateDifficulty(word);
+    if(score>0 && score<=easy_bound) return EASY;
+    else if (score>easy_bound && score<=medium_bound) return MEDIUM;
+    else if (score>medium_bound) return HARD;
+}
+
 WordList parseFile(const char *file_path) {
     WordList words;
     FILE *file = fopen(file_path, "r");
@@ -114,10 +121,7 @@ WordList parseFile(const char *file_path) {
             if (words.words_array[i].word[length - 1] == '\n') {
                 words.words_array[i].word[length - 1] = '\0';
             }
-            float score = calculateDifficulty(words.words_array[i].word);
-            if(score>0 && score<=easy_bound) words.words_array[i].difficulty= EASY;
-            else if (score>easy_bound && score<=medium_bound) words.words_array[i].difficulty= MEDIUM;
-            else if (score>medium_bound) words.words_array[i].difficulty= HARD;
+            words.words_array[i].difficulty = getWordDifficulty(words.words_array[i].word);
             printf("%s -- %d\n",words.words_array[i].word,words.words_array[i].difficulty);
             // printf("%s -- %.2f\n",words.words_array[i].word,score);
 
