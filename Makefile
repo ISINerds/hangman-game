@@ -34,6 +34,9 @@ build: src/main.c
 run:
 	export LD_LIBRARY_PATH=./external/raylib-5.0/lib; \
 	./build/main
+run_saber:
+	export LD_LIBRARY_PATH=./external/raylib-5.0/lib; \
+	LIBGL_ALWAYS_SOFTWARE=1 ./build/main
 
 test: $(TEST)/bin $(TESTBINS) $(TEST)/images
 	export LD_LIBRARY_PATH=./external/criterion-v2.3.3/lib/; \
