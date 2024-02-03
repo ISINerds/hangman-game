@@ -27,7 +27,7 @@ install_raylib:$(EXTERNAL)
 # @RAYLIB_PATH="./build_raylib/_deps/raylib-build/raylib"; \
 # gcc -I"$$RAYLIB_PATH/include" -L"$$RAYLIB_PATH" -o ./build/main ./src/main.c -lraylib -lm -lglfw -ldl -lpthread -w
 
-build: src/main.c
+build: src/main.c src/game_page.h src/settings_page.h src/welcome_page.h src/state.h
 	@mkdir -p build/
 	RAYLIB_PATH="./external/raylib-5.0/lib"; \
 	gcc -I"./external/raylib-5.0/include" -L"./external/raylib-5.0/lib" -o ./build/main src/main.c -lraylib -lm -lglfw -ldl -lpthread -w
