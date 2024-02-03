@@ -13,8 +13,5 @@ void drawSettingsPage(GameState* state,int screen_width,int screen_height){
 void updateSettingsPage(GameState* state,int screen_width,int screen_height){
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         state->current_page=GAME_PAGE;
-        state->game_difficulty=asdas;
-        akasdk
-        state
     }
 }
