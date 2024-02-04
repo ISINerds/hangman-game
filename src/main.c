@@ -23,7 +23,7 @@ int main(void){
     BinaryTree* root = NULL;
     root = addWords(words,root);
     generateImageFromBinaryTree(root,"./build/tree.svg","./assets/tree.gv");
-    GameState state = { .current_page=GAME_PAGE};
+    GameState state = { .current_page=SETTINGS_PAGE, .word_list=words, .attempt=6};
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Simple Raylib Example");
     Texture2D background_image = LoadTexture("./assets/images/background.png");
 

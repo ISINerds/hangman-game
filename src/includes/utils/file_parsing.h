@@ -154,8 +154,6 @@ char* getRandomWord(Difficulty difficulty_choice, WordList list_words) {
 
         int randomIndex = rand() % (nb);
 
-        printf("Size of the array with the difficulty choice is %d \n",nb);
-
         return array_scores[array_difficulty_choice[randomIndex]].word;
 
     }

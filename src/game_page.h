@@ -10,7 +10,23 @@ void drawTop(GameState* state,Rectangle top_rect){
 void drawKeyboard(GameState* state,Rectangle keyboard_rect){
     DrawRectangleRoundedLines(keyboard_rect,0.2,1,1,ColorFromHSV(120,1,1));
 }
-void drawHangMan(GameState* state,Rectangle hangman_rect){
+void drawHangMan(GameState* state,Rectangle hangman_rect, int screen_width, int screen_height){
+    if (state->attempt >= 0 && state->attempt <= 6) {
+            char filePath[50];
+            snprintf(filePath, sizeof(filePath), "././assets/images/Hangman/hangman%d.png", state->attempt);
+
+            Image image = LoadImage(filePath);
+            Texture2D texture = LoadTextureFromImage(image);
+
+            if(state->attempt == 6 ) {
+                Image blood_image = LoadImage("././assets/images/Hangman/blood.png");
+                Texture2D blood_texture = LoadTextureFromImage(blood_image);
+                DrawTexture(blood_texture, hangman_rect.x + screen_width/8 , hangman_rect.y + screen_height/6, WHITE);
+            }
+
+            DrawTexturePro(texture, (Rectangle){ 0, 0, (float)texture.width, (float)texture.height } , hangman_rect, (Vector2){hangman_rect.width / 12, hangman_rect.height / 12 } , 0.0f , WHITE);
+
+        } else printf("Invalid attempt value: %d\n", state->attempt);
     DrawRectangleRoundedLines(hangman_rect,0.2,1,1,ColorFromHSV(120,1,1));
 }
 void drawGamePage(GameState* state,int screen_width,int screen_height){
@@ -36,7 +52,7 @@ void drawGamePage(GameState* state,int screen_width,int screen_height){
         .width = screen_width*0.4,
         .height = screen_height*0.7,
     };
-    drawHangMan(state,hangman_rect);
+    drawHangMan(state,hangman_rect,screen_width,screen_height);
 
 }
 void updateTop(GameState* state,int screen_width,int screen_height){
