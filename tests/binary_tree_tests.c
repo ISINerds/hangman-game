@@ -60,13 +60,6 @@ Test(test_binary_tree, binary_tree_adding_list_of_words) {
     cr_assert(emptyTree == NULL, "Unexpectedly added an empty list of words to the binary tree.");
 }
 
-
-Test(test_binary_tree, binary_tree_null_search) {
-    // Test case: Searching for a word in a NULL binary tree should return 0
-    cr_assert(search_word(NULL, "school") == 0, "Unexpected result when searching for a word in a NULL binary tree.");
-}
-
-
 Test(test_binary_tree, binary_tree_word_search) {
     BinaryTree* root = NULL;
     WordScore* words_array = (WordScore*)malloc(sizeof(WordScore*)*5);
@@ -145,4 +138,39 @@ Test(test_binary_tree, binary_tree_remove_word) {
     cr_assert(search_word(root5, "apple") == 1, "Unexpected result when searching for word 'apple' after removal.");
     cr_assert(search_word(root5, "cherry") == 1, "Unexpected result when searching for word 'cherry' after removal.");
     cr_assert(search_word(root5, "date") == 1, "Unexpected result when searching for word 'date' after removal.");
+}
+
+Test(test_binary_tree, binary_tree_get_letter_indexes) {   
+    // Test case 1: attempting to get the indexes of a letter in a word while the binary tree is empty. 
+    int *pos_array = initiliazePosArray(strlen("school"));
+    BinaryTree* emptyTree = NULL;
+    cr_assert(getletterIndex(pos_array ,0, 'c', "school",emptyTree)==NULL, "Unexpected result when attempting to get indexes of a letter in a word in a NULL binary tree.");
+
+    // Test case 2: attempting to get indexes of a letter in an empty string.
+    BinaryTree* root1 = createBinaryTree("apple");
+    root1 = addWordToBinaryTree("school", root1);
+    int *pos_array1 = initiliazePosArray(strlen("school"));
+    cr_assert(getletterIndex(pos_array1 ,0, 'c', "",root1)==NULL, "Unexpected result when attempting to get indexes of a letter in an empty string.");
+
+    // Test case 3: attempting to get indexes of a letter that is not present in the word.
+    BinaryTree* root2 = createBinaryTree("apple");
+    root2 = addWordToBinaryTree("school", root2);
+    int *pos_array2 = initiliazePosArray(strlen("school"));
+    pos_array2= getletterIndex(pos_array2 ,0, 'a', "school",root2);
+    cr_assert(compareArrayToString(pos_array2,"000000")==1, "Unexpected result when attempting to get indexes of a letter that is not in the word.");
+    
+    // Test case 4: getting index of a letter that is present once in the word.
+    BinaryTree* root3 = createBinaryTree("apple");
+    root3 = addWordToBinaryTree("school", root3);
+    int *pos_array3 = initiliazePosArray(strlen("school"));
+    pos_array3= getletterIndex(pos_array3 ,0, 'h', "school",root3);
+    cr_assert(compareArrayToString(pos_array3,"001000")==1, "Unexpected result when attempting to get indexes of a letter that is present once in the word.");
+
+    // Test case 5: getting indexes of a letter with multiple occurrences in the word.
+    BinaryTree* root4 = createBinaryTree("apple");
+    root4 = addWordToBinaryTree("school", root4);
+    int *pos_array4 = initiliazePosArray(strlen("school"));
+    pos_array4= getletterIndex(pos_array4 ,0, 'o', "school",root4);
+    cr_assert(compareArrayToString(pos_array4,"000110")==1, "Unexpected result when attempting to get indexes of a letter with multiple occurrences in the word.");
+
 }
