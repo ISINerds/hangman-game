@@ -26,8 +26,8 @@ install_raylib:$(EXTERNAL)
 # 	cd ./external/criterion-v2.3.3 && mkdir build && cd build/ && cmake .. && make -j5
 # @RAYLIB_PATH="./build_raylib/_deps/raylib-build/raylib"; \
 # gcc -I"$$RAYLIB_PATH/include" -L"$$RAYLIB_PATH" -o ./build/main ./src/main.c -lraylib -lm -lglfw -ldl -lpthread -w
-
-build: src/main.c src/game_page.h src/settings_page.h src/welcome_page.h src/state.h
+#  src/main.c src/game_page.h src/settings_page.h src/welcome_page.h src/state.h
+build: src/main.c src/game_page.h src/settings_page.h src/welcome_page.h src/state.h src/includes/data-structures/binary_tree.h
 	@mkdir -p build/
 	RAYLIB_PATH="./external/raylib-5.0/lib"; \
 	gcc -I"./external/raylib-5.0/include" -L"./external/raylib-5.0/lib" -o ./build/main src/main.c -lraylib -lm -lglfw -ldl -lpthread -w
