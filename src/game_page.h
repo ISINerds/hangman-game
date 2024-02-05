@@ -23,7 +23,7 @@ void drawTop(GameState* state,Rectangle top_rect){
         DrawCircle(circleX, (top_rect.height) / 2 +10, circle_radius, circleColors[i]);
     }
 
-    state->curr_word_state = "information";
+    // state->curr_word_state = "information";
     // DrawRectangleRoundedLines(top_rect,0.2,1,1,ColorFromHSV(120,1,1));
     if(state->curr_word_state != NULL){
         int font_size= 50;
@@ -36,8 +36,6 @@ void drawTop(GameState* state,Rectangle top_rect){
             DrawText(TextFormat("%c", toupper(state->curr_word_state[i])), wordX + i * (letter_spacing + 20), wordY, 20, WHITE);
         }
     }
-    
-
 }
 // DrawRectangleRoundedLines(keyboard_rect,0.2,1,1,ColorFromHSV(120,1,1));
 void drawKeyboard(GameState* state, Rectangle keyboard_rect) {
@@ -107,24 +105,22 @@ void drawKeyboard(GameState* state, Rectangle keyboard_rect) {
         }
     }
 }
-void drawHangMan(GameState* state,Rectangle hangman_rect, int screen_width, int screen_height){
+void drawHangMan(GameState* state, Rectangle hangman_rect, int screen_width, int screen_height) {
     if (state->attempt >= 0 && state->attempt <= 6) {
-            char filePath[50];
-            snprintf(filePath, sizeof(filePath), "././assets/images/Hangman/hangman%d.png", state->attempt);
-
-            Image image = LoadImage(filePath);
-            Texture2D texture = LoadTextureFromImage(image);
-
-            if(state->attempt == 6 ) {
-                Image blood_image = LoadImage("././assets/images/Hangman/blood.png");
-                Texture2D blood_texture = LoadTextureFromImage(blood_image);
-                DrawTexture(blood_texture, hangman_rect.x + screen_width/8 , hangman_rect.y + screen_height/6, WHITE);
-            }
-
-            DrawTexturePro(texture, (Rectangle){ 0, 0, (float)texture.width, (float)texture.height } , hangman_rect, (Vector2){hangman_rect.width / 12, hangman_rect.height / 12 } , 0.0f , WHITE);
-
-        } else printf("Invalid attempt value: %d\n", state->attempt);
-    DrawRectangleRoundedLines(hangman_rect,0.2,1,1,ColorFromHSV(120,1,1));
+        if (state->attempt == 6) {
+            DrawTexture(blood_image, hangman_rect.x + screen_width / 8, hangman_rect.y + screen_height / 6, WHITE);
+        }
+        DrawTexturePro(hangman_images[state->attempt],
+                       (Rectangle){ 0, 0, (float)hangman_images[state->attempt].width, (float)hangman_images[state->attempt].height },
+                       hangman_rect,
+                       (Vector2){ hangman_rect.width / 20, hangman_rect.height / 20 }, // Adjust the division factor here
+                       0.0f,
+                       WHITE);
+    } else {
+        printf("Invalid attempt value: %d\n", state->attempt);
+        printf("Not Implemented \n");
+        exit(1);
+    }
 }
 void drawGamePage(GameState* state,int screen_width,int screen_height){
     // DrawRectangle(screen_width/4, screen_height/4, screen_width/2, screen_height/2, GREEN);
@@ -137,14 +133,14 @@ void drawGamePage(GameState* state,int screen_width,int screen_height){
     };
     drawTop(state,top_rect);
     Rectangle keyboard_rect = {
-        .x = (screen_width*0.05),
+        .x = (screen_width*0.05) + screen_width*0.4 + (screen_width*0.05),
         .y = (screen_height*0.04) + screen_height*0.125 + (screen_height*0.04),
         .width = screen_width*0.4,
         .height = screen_height*0.7,
     };
     drawKeyboard(state,keyboard_rect);
     Rectangle hangman_rect = {
-        .x = (screen_width*0.05) + screen_width*0.4 + (screen_width*0.05),
+        .x = (screen_width*0.05),
         .y = (screen_height*0.04) + screen_height*0.125 + (screen_height*0.04),
         .width = screen_width*0.4,
         .height = screen_height*0.7,
@@ -157,7 +153,7 @@ void updateTop(GameState* state,int screen_width,int screen_height){
 }
 void updateKeyboard(GameState* state,int screen_width,int screen_height){
     Rectangle keyboard_rect = {
-        .x = (screen_width*0.05),
+        .x = (screen_width*0.05) + screen_width*0.4 + (screen_width*0.05),
         .y = (screen_height*0.04) + screen_height*0.125 + (screen_height*0.04),
         .width = screen_width*0.4,
         .height = screen_height*0.7,
@@ -196,7 +192,7 @@ void updateKeyboard(GameState* state,int screen_width,int screen_height){
                 }
                 printf("state = %s\n",state->curr_word_state);
                 (state->keyboard).keys[kk].state=ok?KEY_CORRECT:KEY_WRONG;
-                if(ok){
+                if(!ok){
                     state->attempt++;
                 }
                 free(arr_pos);
