@@ -19,11 +19,42 @@ void drawBackgroundImage(Texture2D background_image,int screen_width,int screen_
 
 
 int main(void){
-    WordList words = parseFile("./assets/words.txt");
+    // WordList words = parseFile("./assets/words.txt");
+    WordScore* words_array = (WordScore*)malloc(sizeof(WordScore)*5);
+    words_array[0].word = "school";
+    words_array[0].difficulty = EASY;
+    
+    words_array[1].word = "apple";
+    words_array[1].difficulty = EASY;
+    
+    words_array[2].word = "tree";
+    words_array[2].difficulty = EASY;
+    
+    words_array[3].word = "education";
+    words_array[3].difficulty = EASY;
+    
+    words_array[4].word = "evaluation";
+    words_array[4].difficulty = EASY;
+    WordList words = {
+        .words_array = words_array,
+        .words_array_size = 5
+    };
     BinaryTree* root = NULL;
     root = addWords(words,root);
-    generateImageFromBinaryTree(root,"./build/tree.svg","./assets/tree.gv");
-    GameState state = { .current_page=SETTINGS_PAGE, .word_list=words, .attempt=6};
+    generateImageFromBinaryTree(root,"./build/tree","./assets/tree.gv");
+
+
+    GameState state = {
+        .current_page=GAME_PAGE,
+        .keyboard = initKeyBoard(),
+        .root=root,
+        .attempt=0,
+        .curr_word_state=malloc(strlen("__________") + 1),//"__________",
+        .word_to_guess="evaluation",
+        .word_list=words
+    };
+    strcpy(state.curr_word_state, "__________");
+
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Simple Raylib Example");
     Texture2D background_image = LoadTexture("./assets/images/background.png");
 
