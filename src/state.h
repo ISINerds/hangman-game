@@ -40,6 +40,8 @@ typedef struct{
     char* curr_word_state;
     int attempt;
 }GameState;
+Texture2D hangman_images[7];
+Texture2D blood_image;
 
 void changePage(GameState* state,Page page){
     state->current_page=page;

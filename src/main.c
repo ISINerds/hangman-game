@@ -19,46 +19,28 @@ void drawBackgroundImage(Texture2D background_image,int screen_width,int screen_
 
 
 int main(void){
-    // WordList words = parseFile("./assets/words.txt");
-    WordScore* words_array = (WordScore*)malloc(sizeof(WordScore)*5);
-    words_array[0].word = "school";
-    words_array[0].difficulty = EASY;
-    
-    words_array[1].word = "apple";
-    words_array[1].difficulty = EASY;
-    
-    words_array[2].word = "tree";
-    words_array[2].difficulty = EASY;
-    
-    words_array[3].word = "education";
-    words_array[3].difficulty = EASY;
-    
-    words_array[4].word = "evaluation";
-    words_array[4].difficulty = EASY;
-    WordList words = {
-        .words_array = words_array,
-        .words_array_size = 5
-    };
+    WordList words = parseFile("./assets/words.txt");
     BinaryTree* root = NULL;
     root = addWords(words,root);
-    generateImageFromBinaryTree(root,"./build/tree","./assets/tree.gv");
-
-
+    // generateImageFromBinaryTree(root,"./build/tree","./assets/tree.gv");
     GameState state = {
-        .current_page=GAME_PAGE,
+        .current_page=WELCOME_PAGE,
         .keyboard = initKeyBoard(),
         .root=root,
         .attempt=0,
-        .curr_word_state=malloc(strlen("__________") + 1),//"__________",
-        .word_to_guess="evaluation",
-        .word_list=words
+        .word_list=words,
     };
-    strcpy(state.curr_word_state, "__________");
-
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Simple Raylib Example");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Hangman");
+    for(int i=0;i<7;i++){
+        char filePath[50];
+        snprintf(filePath, sizeof(filePath), "./assets/images/Hangman/hangman%d.png",i);
+        hangman_images[i]=LoadTexture(filePath);
+    }
+    blood_image=LoadTexture("./assets/images/Hangman/blood.png");
     Texture2D background_image = LoadTexture("./assets/images/background.png");
 
     SetTargetFPS(60);
+
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(RAYWHITE);
@@ -97,6 +79,11 @@ int main(void){
         EndDrawing();
     }
     UnloadTexture(background_image); // Unload texture
+    for(int i=0;i<7;i++){
+        UnloadTexture(hangman_images[i]);
+    }
+    UnloadTexture(blood_image);
+
     CloseWindow();
     return 0;
 }
