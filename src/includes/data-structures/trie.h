@@ -71,7 +71,7 @@ Trie* initiliazeTrie(char data) {
 }
 
 
-int wordExists(char * word, int i, int length, Trie* trie) {
+int wordExists(char *word, int i, int length, Trie *trie) {
     if(i==length-1 && trie->array_node_sons[0]== NULL){
         return 0;
     }
@@ -84,6 +84,11 @@ int wordExists(char * word, int i, int length, Trie* trie) {
     else {
         return wordExists(word, i+1, length, trie->array_node_sons[getAlphabeticalOrder(toupper(word[i+1]))] );
     }
+}
+
+int searchWordTrie(char * word, ListTrie dict){
+    if(word==NULL || word[0] == '\0') return 0;
+    return wordExists(word,0,strlen(word),dict.array_roots[getAlphabeticalOrder(word[0])-1 ] );
 }
 
 void addWordToTrie(char * word, int i, int length, Trie* trie) {
@@ -123,23 +128,30 @@ int getAlphabeticalOrder(char c) {
     }
 }
 
-BinaryTree* intiliazeBinaryTree(char data,BinaryTree* lc, BinaryTree* rc) {
-    BinaryTree* node = (BinaryTree*) malloc(sizeof(BinaryTree));
+ListTrie createTrieFromWords(WordList words){
+    ListTrie dict = initiliazeListTrie(26);
+    for (int j=0; j<words.words_array_size; j++) {
+        char firstSymbol = (words.words_array[j]).word[0];
+        if (dict.array_roots[getAlphabeticalOrder(firstSymbol) -1 ] == NULL ) {
+            Trie* trieP = initiliazeTrie(firstSymbol);
+            if (trieP!=NULL) {
+                dict.array_roots[getAlphabeticalOrder(firstSymbol)-1]= trieP;
 
-    if(node == NULL ) {
-        printf("Error while allocating a Binary Tree \n");
-        return NULL;
+            }else {
+                printf("Error in allocation of TrieP pointer \n");
+            }
+        }
+        addWordToTrie((words.words_array[j]).word,1,strlen((words.words_array[j]).word), dict.array_roots[getAlphabeticalOrder(firstSymbol)-1]);
+        
     }
-    node->id= counter++;
-    node->data=data;
-    node->left_child= lc; 
-    node->right_child= rc; 
-    return node;
+    return dict;
 }
+
+
 BinaryTree* convertTrieToBT (Trie* trie) {
     if (trie != NULL) {
 
-        BinaryTree* newBT = intiliazeBinaryTree(trie->data, NULL, NULL);
+        BinaryTree* newBT = createNode(trie->data, NULL, NULL);
 
         if(isNodeLeaf(0,trie->array_node_sons) == 1) {
             printf("%c this is a leaf \n", trie->data);
