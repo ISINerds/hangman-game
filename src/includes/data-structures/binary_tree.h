@@ -58,6 +58,7 @@ BinaryTree* addWordToBinaryTree(const char *word, BinaryTree* binary_tree){
   binary_tree->right_child = addWordToBinaryTree(word, binary_tree->right_child);
   return binary_tree;
 }
+
 int * initiliazePosArray(int size) {
     int* array = (int*) malloc (size * sizeof(int));
     for(int i=0; i<size ; i++) {
@@ -67,8 +68,8 @@ int * initiliazePosArray(int size) {
 }
 
 int* getletterIndex(int * array_pos ,int index, char letter, char* word, BinaryTree* BT) {
-    if ( (index==0) && (word[0] < BT->data) ) return NULL;
     if(BT == NULL) return NULL;
+    if ( (index==0) && (word[0] < BT->data) ) return NULL;
     if(BT->data == '\0') {
         return array_pos;
     }
@@ -93,6 +94,16 @@ int search_word(BinaryTree* root,char *word){
   return search_word(root->right_child,word);
 }
 
+int compareArrayToString(int* array, const char* str) {
+        int length = strlen(str);
+        for (int i = 0; i < length; ++i) {
+            // Convert each digit to a character and compare with the corresponding character in the string
+            if (array[i] != (str[i] - '0')) {
+                return 0;  //false
+            }
+        }
+        return 1; //true
+    }
 
 // int search_word(char *word, BinaryTree *binary_tree, Queue* q){
 //   if((binary_tree == NULL)||(word[0] < binary_tree->data)) return 0;

@@ -54,6 +54,7 @@ int main(void){
         .word_list=words
     };
     strcpy(state.curr_word_state, "__________");
+
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Simple Raylib Example");
     Texture2D background_image = LoadTexture("./assets/images/background.png");
 
