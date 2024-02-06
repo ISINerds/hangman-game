@@ -2,8 +2,8 @@
 
 
 #include "raylib.h"
-#include "./includes/utils/file_parsing.h"
-#include "./includes/data-structures/binary_tree.h"
+#include "../includes/utils/file_parsing.h"
+#include "../includes/data-structures/binary_tree.h"
 # define SCREEN_WIDTH 800
 # define SCREEN_HEIGHT 450
 # define MAX_ATTEMPT 6

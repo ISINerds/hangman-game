@@ -1,6 +1,6 @@
 #pragma once
 #include "./state.h"
-#include "./includes/data-structures/binary_tree.h"
+#include "../includes/data-structures/binary_tree.h"
 #include "string.h"
 void drawGamePage(GameState* state,int screen_width,int screen_height);
 void updateGamePage(GameState* state,int screen_width,int screen_height);
@@ -132,6 +132,7 @@ void drawGamePage(GameState* state,int screen_width,int screen_height){
         .height = screen_height*0.125,
     };
     drawTop(state,top_rect);
+    // TODO MAHA
     Rectangle keyboard_rect = {
         .x = (screen_width*0.05) + screen_width*0.4 + (screen_width*0.05),
         .y = (screen_height*0.04) + screen_height*0.125 + (screen_height*0.04),
