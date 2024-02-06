@@ -11,6 +11,28 @@ void drawKeyboard(GameState* state,Rectangle keyboard_rect){
     DrawRectangleRoundedLines(keyboard_rect,0.2,1,1,ColorFromHSV(120,1,1));
 }
 void drawHangMan(GameState* state,Rectangle hangman_rect, int screen_width, int screen_height){
+    Image heart = LoadImage("././assets/images/Hangman/heart.png");
+    Texture2D heart_texture = LoadTextureFromImage(heart);
+    //DrawTexturePro(heart_texture, (Rectangle){ 0, 0, (float)heart_texture.width/4, (float)heart_texture.height/4 } , hangman_rect, (Vector2){hangman_rect.width / 8, hangman_rect.height / 8 } , 0.0f , WHITE);
+    //DrawTexture(heart_texture,hangman_rect.x + hangman_rect.width / 1.3,hangman_rect.y - screen_height/4.5 , WHITE );
+
+    float scaleFactor = 0.5f + 0.5f * sinf(GetTime() * 10); // Adjust the speed of pulsation with the multiplier
+    Rectangle heartRect = {
+        hangman_rect.x + hangman_rect.width / 1.3,
+        hangman_rect.y,
+        (float)heart_texture.width * scaleFactor,
+        (float)heart_texture.height * scaleFactor
+    };
+    
+    DrawTexturePro(heart_texture, (Rectangle){ 0, 0, (float)heart_texture.width, (float)heart_texture.height },
+                   heartRect, (Vector2){ heartRect.width / 2, heartRect.height / 2 }, 0.0f, WHITE);
+
+    char attempts[2];
+    sprintf(attempts, "%d", state->attempt);
+
+    //DrawText(attempts, hangman_rect.x + hangman_rect.width / 1.3 + screen_width/10 , hangman_rect.y - screen_height/5, 25, WHITE);
+    DrawText(attempts, heartRect.x + screen_width/35 , hangman_rect.y, 23, PURPLE);
+
     if (state->attempt >= 0 && state->attempt <= 6) {
             char filePath[50];
             snprintf(filePath, sizeof(filePath), "././assets/images/Hangman/hangman%d.png", state->attempt);
@@ -27,7 +49,7 @@ void drawHangMan(GameState* state,Rectangle hangman_rect, int screen_width, int 
             DrawTexturePro(texture, (Rectangle){ 0, 0, (float)texture.width, (float)texture.height } , hangman_rect, (Vector2){hangman_rect.width / 12, hangman_rect.height / 12 } , 0.0f , WHITE);
 
         } else printf("Invalid attempt value: %d\n", state->attempt);
-    DrawRectangleRoundedLines(hangman_rect,0.2,1,1,ColorFromHSV(120,1,1));
+    //DrawRectangleRoundedLines(hangman_rect,0.2,1,1,ColorFromHSV(120,1,1));
 }
 void drawGamePage(GameState* state,int screen_width,int screen_height){
     // DrawRectangle(screen_width/4, screen_height/4, screen_width/2, screen_height/2, GREEN);
