@@ -119,7 +119,7 @@ WordList parseFile(const char *file_path) {
             // remove the newline character if exist
             size_t length = strlen(words.words_array[i].word);
             if (words.words_array[i].word[length - 1] == '\n') {
-                words.words_array[i].word[length - 1] = '\0';
+                words.words_array[i].word[length - 2] = '\0';
             }
             words.words_array[i].difficulty = getWordDifficulty(words.words_array[i].word);
             printf("%s -- %d\n",words.words_array[i].word,words.words_array[i].difficulty);

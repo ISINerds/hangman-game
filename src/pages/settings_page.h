@@ -1,6 +1,6 @@
 #pragma once
 #include "./state.h"
-#include "././includes/utils/file_parsing.h"
+#include "../includes/utils/file_parsing.h"
 void drawSettingsPage(GameState* state,int screen_width,int screen_height);
 void updateSettingsPage(GameState* state,int screen_width,int screen_height);
 

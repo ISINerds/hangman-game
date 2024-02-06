@@ -1,7 +1,7 @@
 #include<stdio.h>
-#include "./includes/utils/file_parsing.h"
-#include "./includes/data-structures/binary_tree.h"
-#include "./includes/data-structures/trie.h"
+#include "../includes/utils/file_parsing.h"
+#include "../includes/data-structures/binary_tree.h"
+#include "../includes/data-structures/trie.h"
 // TODO : refactor the includes
 #include "./state.h"
 #include "./welcome_page.h"
