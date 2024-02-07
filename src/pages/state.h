@@ -42,6 +42,7 @@ typedef struct{
 }GameState;
 Texture2D hangman_images[7];
 Texture2D blood_image;
+Sound success_sound,fail_sound;
 
 void changePage(GameState* state,Page page){
     state->current_page=page;

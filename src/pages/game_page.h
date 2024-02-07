@@ -191,16 +191,45 @@ void updateKeyboard(GameState* state,int screen_width,int screen_height){
                         ok=1;
                     }
                 }
-                printf("state = %s\n",state->curr_word_state);
                 (state->keyboard).keys[kk].state=ok?KEY_CORRECT:KEY_WRONG;
                 if(!ok){
                     state->attempt++;
+                    PlaySound(fail_sound);
+                }else{
+                    PlaySound(success_sound);
                 }
                 free(arr_pos);
             }
             kk++;
         }
     }
+    for(int i=0;i<26;i++){
+        if(IsKeyDown(KEY_A + i)&&(state->keyboard).keys[i].state==KEY_NOT_CLICKED){
+            int n = strlen(state->word_to_guess);
+            int* arr_pos = (int*)malloc(sizeof(int)*n);
+            for(int j=0;j<n;j++){
+                arr_pos[j]=0;
+            }
+            getletterIndex(arr_pos,0,(char)((state->keyboard).keys[i].character+('a'-'A')),state->word_to_guess,state->root);
+            int ok=0;
+            for(int j=0;j<n;j++){
+                if(arr_pos[j]==1){
+                    (state->curr_word_state)[j]=(state->keyboard).keys[i].character;
+                    ok=1;
+                }
+            }
+            free(arr_pos);
+            (state->keyboard).keys[i].state=ok?KEY_CORRECT:KEY_WRONG;
+            if(!ok){
+                state->attempt++;
+                PlaySound(fail_sound);
+            }else{
+                PlaySound(success_sound);
+            }
+            break;
+        }
+    }
+
 
 }
 void updateHangMan(GameState* state,int screen_width,int screen_height){

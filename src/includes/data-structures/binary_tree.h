@@ -68,8 +68,8 @@ int * initiliazePosArray(int size) {
 }
 
 int* getletterIndex(int * array_pos ,int index, char letter, char* word, BinaryTree* BT) {
-    if(BT == NULL) return NULL;
-    if ( (index==0) && (word[0] < BT->data) ) return NULL;
+    if(BT == NULL) return array_pos;
+    if ( (index==0) && (word[0] < BT->data) ) return array_pos;
     if(BT->data == '\0') {
         return array_pos;
     }
