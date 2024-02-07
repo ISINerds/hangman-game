@@ -31,6 +31,9 @@ int main(void){
         .word_list=words,
     };
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Hangman");
+    InitAudioDevice();
+    success_sound = LoadSound("./assets/sound/success.mp3");
+    fail_sound = LoadSound("./assets/sound/fail.mp3");
     for(int i=0;i<7;i++){
         char filePath[50];
         snprintf(filePath, sizeof(filePath), "./assets/images/Hangman/hangman%d.png",i);
@@ -38,7 +41,6 @@ int main(void){
     }
     blood_image=LoadTexture("./assets/images/Hangman/blood.png");
     Texture2D background_image = LoadTexture("./assets/images/background.png");
-
     SetTargetFPS(60);
 
     while (!WindowShouldClose()) {
