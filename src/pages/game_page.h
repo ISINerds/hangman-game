@@ -152,6 +152,33 @@ void drawGamePage(GameState* state,int screen_width,int screen_height){
 void updateTop(GameState* state,int screen_width,int screen_height){
 
 }
+
+int customIsKeyDown(KeyboardLayout layout){
+    int keyPressed = GetKeyPressed();
+    if((keyPressed==0 || keyPressed>90 || keyPressed<65)&&keyPressed!=KEY_SEMICOLON){
+        return -1;
+    }
+    // printf("keypressed : %d\n",keyPressed);
+    if(layout == US){
+        return keyPressed-KEY_A;
+    }else{
+        switch (keyPressed){
+        case KEY_Q:
+            return 0; //A
+        case KEY_A:
+            return 16; //Q
+        case KEY_Z:
+            return 22; //W
+        case KEY_W:
+            return 25; //Z
+        case KEY_SEMICOLON:
+            return 12; //M
+        default:
+            return keyPressed-KEY_A;
+        }
+    }
+
+}
 void updateKeyboard(GameState* state,int screen_width,int screen_height){
     Rectangle keyboard_rect = {
         .x = (screen_width*0.05) + screen_width*0.4 + (screen_width*0.05),
@@ -203,32 +230,31 @@ void updateKeyboard(GameState* state,int screen_width,int screen_height){
             kk++;
         }
     }
-    for(int i=0;i<26;i++){
-        if(IsKeyDown(KEY_A + i)&&(state->keyboard).keys[i].state==KEY_NOT_CLICKED){
-            int n = strlen(state->word_to_guess);
-            int* arr_pos = (int*)malloc(sizeof(int)*n);
-            for(int j=0;j<n;j++){
-                arr_pos[j]=0;
+    int index=0;
+    if((index = customIsKeyDown(state->keyboard.keyboard_layout))!=-1&&(state->keyboard).keys[index].state==KEY_NOT_CLICKED){
+        int n = strlen(state->word_to_guess);
+        int* arr_pos = (int*)malloc(sizeof(int)*n);
+        for(int j=0;j<n;j++){
+            arr_pos[j]=0;
+        }
+        getletterIndex(arr_pos,0,(char)((state->keyboard).keys[index].character+('a'-'A')),state->word_to_guess,state->root);
+        int ok=0;
+        for(int j=0;j<n;j++){
+            if(arr_pos[j]==1){
+                (state->curr_word_state)[j]=(state->keyboard).keys[index].character;
+                ok=1;
             }
-            getletterIndex(arr_pos,0,(char)((state->keyboard).keys[i].character+('a'-'A')),state->word_to_guess,state->root);
-            int ok=0;
-            for(int j=0;j<n;j++){
-                if(arr_pos[j]==1){
-                    (state->curr_word_state)[j]=(state->keyboard).keys[i].character;
-                    ok=1;
-                }
-            }
-            free(arr_pos);
-            (state->keyboard).keys[i].state=ok?KEY_CORRECT:KEY_WRONG;
-            if(!ok){
-                state->attempt++;
-                PlaySound(fail_sound);
-            }else{
-                PlaySound(success_sound);
-            }
-            break;
+        }
+        free(arr_pos);
+        (state->keyboard).keys[index].state=ok?KEY_CORRECT:KEY_WRONG;
+        if(!ok){
+            state->attempt++;
+            PlaySound(fail_sound);
+        }else{
+            PlaySound(success_sound);
         }
     }
+    
 
 
 }
