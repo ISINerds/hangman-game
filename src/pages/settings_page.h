@@ -99,7 +99,7 @@ void updateSettingsPage(GameState* state,int screen_width,int screen_height){
         char* chosen_word = getRandomWord(HARD, words);
         state->word_to_guess=chosen_word;
         int len = strlen(chosen_word);
-        state->curr_word_state=malloc((len + 1)*sizeof(char));
+        state->curr_word_state=(char*)malloc((len + 1) * sizeof(char));
         char* underscores = (char*)malloc((len + 1) * sizeof(char));
         for(int i=0;i<len;i++)underscores[i]='_';
         strcpy(state->curr_word_state,underscores);

@@ -99,5 +99,5 @@ teacher
 force
 education
 headmaster
-conscious 
+conscious
 controversial

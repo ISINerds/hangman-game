@@ -124,9 +124,7 @@ WordList parseFile(const char *file_path) {
             words.words_array[i].difficulty = getWordDifficulty(words.words_array[i].word);
             printf("%s -- %d\n",words.words_array[i].word,words.words_array[i].difficulty);
             // printf("%s -- %.2f\n",words.words_array[i].word,score);
-
         }
-
         fclose(file);
 
         return words;

@@ -21,11 +21,17 @@ $(TEST)/images:
 
 $(EXTERNAL):
 	@mkdir $@
+$(EXTERNAL)/raygui:
+	@mkdir $@
+
 install_criterion:$(EXTERNAL)
 	@cd ./external && curl -L $(CRITERION_URL_LIB) -o criterion-v2.3.3.tar.bz2 && tar -xjf criterion-v2.3.3.tar.bz2 && rm criterion-v2.3.3.tar.bz2
 install_raylib:$(EXTERNAL)
 	@sudo apt install libasound2-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev libxinerama-dev
 	@cd ./external && mkdir raylib-5.0 && cd raylib-5.0 && curl -L $(raylib_URL_LIB) -o raylib-5.0.tar.gz && tar -xzvf raylib-5.0.tar.gz --strip-components=1 && rm raylib-5.0.tar.gz
+install_raygui:$(EXTERNAL) $(EXTERNAL)/raygui
+	@cd ./external/raygui && curl -o raygui.h https://raw.githubusercontent.com/raysan5/raygui/master/src/raygui.h
+
 build: $(DATA_STRUCTURES) $(UTILS) $(PAGES_H_FILES) $(PAGES_C_FILES)
 	@mkdir -p build/
 	@RAYLIB_PATH="./external/raylib-5.0/lib"; \

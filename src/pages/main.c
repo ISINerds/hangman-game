@@ -8,7 +8,7 @@
 #include "./settings_page.h"
 #include "./game_page.h"
 #include "./mode_selection.h"
-
+#include "./enter_word_page.h"
 
 void drawBackgroundImage(Texture2D background_image,int screen_width,int screen_height){
         float scaleX = (float)screen_width / background_image.width;
@@ -18,14 +18,34 @@ void drawBackgroundImage(Texture2D background_image,int screen_width,int screen_
 
 }
 
+void setTextBoxStyles(){
+    GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
+    GuiSetStyle(TEXTBOX, BASE_COLOR_PRESSED, 0xFFFFFFFF);
+    GuiSetStyle(TEXTBOX, BASE_COLOR_DISABLED, 0xFFFFFFFF);
+    GuiSetStyle(TEXTBOX, BORDER_COLOR_NORMAL, 0x000000FF);
+    GuiSetStyle(TEXTBOX, BORDER_COLOR_FOCUSED, 0x000000FF);
+    GuiSetStyle(TEXTBOX, BORDER_COLOR_PRESSED, 0x000000FF);
+    GuiSetStyle(TEXTBOX, BORDER_COLOR_DISABLED, 0x000000FF);
+    GuiSetStyle(TEXTBOX, TEXT_COLOR_NORMAL, 0x000000FF);
+    GuiSetStyle(TEXTBOX, TEXT_COLOR_DISABLED, 0x000000FF);
+    GuiSetStyle(TEXTBOX, TEXT_COLOR_FOCUSED, 0x000000FF);
+    GuiSetStyle(TEXTBOX, TEXT_COLOR_PRESSED, 0x000000FF);
+    // GuiSetStyle(TEXTBOX, BASE_COLOR_DISABLED, 0x000000FF);
+    // GuiSetStyle(TEXTBOX, BASE_COLOR_FOCUSED, 0x000000FF);
+    // GuiSetStyle(TEXTBOX, BASE_COLOR_NORMAL, 0x000000FF);
+    // GuiSetStyle(TEXTBOX, BASE_COLOR_PRESSED, 0x000000FF);
+}
 
+void setPopUpStyles(){
+    
+}
 int main(void){
     WordList words = parseFile("./assets/words.txt");
     BinaryTree* root = NULL;
     root = addWords(words,root);
-    // generateImageFromBinaryTree(root,"./build/tree","./assets/tree.gv");
+    generateImageFromBinaryTree(root,"./build/tree","./assets/tree.gv");
     GameState state = {
-        .current_page=WELCOME_PAGE,
+        .current_page=ENTER_WORD_PAGE,
         .keyboard = initKeyBoard(),
         .root=root,
         .attempt=0,
@@ -33,6 +53,7 @@ int main(void){
     };
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Hangman");
     InitAudioDevice();
+    setTextBoxStyles();
     success_sound = LoadSound("./assets/sound/success.mp3");
     fail_sound = LoadSound("./assets/sound/fail.mp3");
     heart_beating = LoadSound("./assets/sound/heart_beating.mp3");
@@ -69,8 +90,12 @@ int main(void){
             case GAME_PAGE:
                 updateGamePage(&state,w,h);
                 break;
+
             case MODE_SELECTION:
                 updateModeSelectionPage(&state);
+                break;
+            case ENTER_WORD_PAGE:
+                updateEnterWordPage(&state,w,h);
                 break;
             default:
                 break;
@@ -89,10 +114,15 @@ int main(void){
             case MODE_SELECTION:
                 drawModeSelectionPage(&state);
                 break;
+            case ENTER_WORD_PAGE:
+                drawEnterWordPage(&state,w,h);
+                break;
             default:
                 break;
         }
-
+        int fps = GetFPS();
+        // Render FPS text in bottom-left corner
+        DrawFPS(10, h-30);
         EndDrawing();
     }
     UnloadTexture(background_image); // Unload texture
