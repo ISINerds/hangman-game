@@ -2,37 +2,83 @@
 #include "./state.h"
 #include "../includes/data-structures/binary_tree.h"
 #include "string.h"
+
 void drawGamePage(GameState* state,int screen_width,int screen_height);
 void updateGamePage(GameState* state,int screen_width,int screen_height);
+
+bool isMouseOverBackButton;
 // contains the current state of the word
+
+// Color green = (Color){0,178,13, 255};
+// Color purple = (Color){154,52,161,255};
+// Color yellow = (Color){255,216,0,255};
+// Color pink = (Color){232,0,145,255};
+// Color blue = (Color){0,156,225,255};
+// Color orange = (Color){255,141,0,255};
+
+
 void drawTop(GameState* state,Rectangle top_rect){
-    Color green = (Color){0,178,13, 255};
-    Color purple = (Color){154,52,161,255};
-    Color yellow = (Color){255,216,0,255};
-    Color pink = (Color){232,0,145,255};
-    Color blue = (Color){0,156,225,255};
-    Color orange = (Color){255,141,0,255};
-    //circles
-    float circle_radius = 10.0f;
-    float circles_total_width = 6 * (circle_radius * 2 + 5); // Total width of all circles and gaps
 
-    Color circleColors[] = { green, yellow, orange, pink, blue, purple };
+    int w = GetRenderWidth();
+    int h = GetRenderHeight();
 
-    for (int i = 0; i < 6; ++i) {
-        float circleX = circles_total_width / 2 + i * (circle_radius * 2 + 5);
-        DrawCircle(circleX, (top_rect.height) / 2 +10, circle_radius, circleColors[i]);
+    Rectangle back_rect = {w/12,h/18,w/12,h/8};
+
+    //DrawRectangleRec(back_rect, RED);
+
+    //DrawTexture(back_button, back_rect.x, back_rect.y, WHITE);
+    DrawTexturePro(back_button,
+                (Rectangle){ 0, 0, (float)back_button.width, (float)back_button.height },
+                back_rect,
+                (Vector2){ back_rect.width / 2, back_rect.height / 2 },
+                0.0f,
+                WHITE);
+    Rectangle click_back_button = {w/20,h/42,w/14,h/9};
+    //DrawRectangleRec(click_back_button,RED);
+
+    Vector2 mousePosition = GetMousePosition();
+
+    isMouseOverBackButton = CheckCollisionPointRec(mousePosition, click_back_button);
+
+    float scaleFactor = 0.5f + 0.5f * sinf(GetTime() * (state->attempt+4)); // Adjust the speed of pulsation with the multiplier
+    Rectangle heartRect = {
+        top_rect.x + top_rect.width / 1.2,
+        top_rect.y + h/25,
+        (float)heart_texture.width * scaleFactor,
+        (float)heart_texture.height * scaleFactor
+    };
+
+    if ((6 - state->attempt) % 7 == 1) {
+        if (!IsSoundPlaying(heart_beating)) {
+            PlaySound(heart_beating);
+        }
+    } else if ((6 - state->attempt) % 7 == 0) {
+        StopSound(heart_beating);
     }
+    
+    DrawTexturePro(heart_texture, (Rectangle){ 0, 0, (float)heart_texture.width, (float)heart_texture.height },
+                   heartRect, (Vector2){ heartRect.width / 2, heartRect.height / 2 }, 0.0f, WHITE);
+    char attempts[2];
+    sprintf(attempts, "%d",(6 - state->attempt)%7);
 
-    // state->curr_word_state = "information";
+
+
+    //DrawText(attempts, hangman_rect.x + hangman_rect.width / 1.3 + screen_width/10 , hangman_rect.y - screen_height/5, 25, WHITE);
+    DrawText(attempts, heartRect.x + w/35 , heartRect.y - h/55, h/22, PURPLE);
+
+    //state->curr_word_state = "_______";
     // DrawRectangleRoundedLines(top_rect,0.2,1,1,ColorFromHSV(120,1,1));
     if(state->curr_word_state != NULL){
         int font_size= 50;
-        int letter_spacing=7;
+        int letter_spacing=w/48;
         int word_width = MeasureText(state->curr_word_state, font_size);
-        int wordX = top_rect.x + circles_total_width + (top_rect.width-circles_total_width - word_width) / 2;
+        // int wordX = top_rect.x + circles_total_width + (top_rect.width-circles_total_width - word_width) / 2;
+        int wordX= w/2.5;
         int wordY = (top_rect.height) / 2;
+
+
         for (int i = 0; i < strlen(state->word_to_guess); i++){
-            DrawText(TextFormat("%c", toupper(state->curr_word_state[i])), wordX + i * (letter_spacing + 20), wordY, 20, WHITE);
+            DrawText(TextFormat("%c", toupper(state->curr_word_state[i])), wordX + i * (letter_spacing + 20), wordY, h/20, WHITE);
         }
     }
 }
@@ -110,11 +156,11 @@ void drawHangMan(GameState* state, Rectangle hangman_rect, int screen_width, int
             DrawTexture(blood_image, hangman_rect.x + screen_width / 8, hangman_rect.y + screen_height / 6, WHITE);
         }
         DrawTexturePro(hangman_images[state->attempt],
-                       (Rectangle){ 0, 0, (float)hangman_images[state->attempt].width, (float)hangman_images[state->attempt].height },
-                       hangman_rect,
-                       (Vector2){ hangman_rect.width / 20, hangman_rect.height / 20 }, // Adjust the division factor here
-                       0.0f,
-                       WHITE);
+            (Rectangle){ 0, 0, (float)hangman_images[state->attempt].width, (float)hangman_images[state->attempt].height },
+            hangman_rect,
+            (Vector2){ hangman_rect.width / 20, hangman_rect.height / 20 }, // Adjust the division factor here
+            0.0f,
+            WHITE);
     } else {
         printf("Invalid attempt value: %d\n", state->attempt);
         printf("Not Implemented \n");
@@ -149,6 +195,7 @@ void drawGamePage(GameState* state,int screen_width,int screen_height){
 
 }
 void updateTop(GameState* state,int screen_width,int screen_height){
+    if (isMouseOverBackButton && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) state->current_page=MODE_SELECTION;
 
 }
 

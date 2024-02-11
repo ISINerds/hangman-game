@@ -83,6 +83,6 @@ void drawWelcomePage(GameState* state,int screen_width,int screen_height){
 }
 
 void updateWelcomePage(GameState* state,int screen_width,int screen_height){
-    if(start_button_clicked) state->current_page=SETTINGS_PAGE;
+    if(start_button_clicked) state->current_page=MODE_SELECTION;
 
 }

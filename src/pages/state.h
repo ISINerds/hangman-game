@@ -16,6 +16,7 @@ typedef enum{
     SETTINGS_PAGE,
     ENTER_WORD_PAGE,
     GAME_PAGE,
+    MODE_SELECTION
 }Page;
 
 typedef enum {
@@ -28,6 +29,12 @@ typedef enum {
     KEY_WRONG,
     KEY_NOT_CLICKED
 } KeyState;
+
+typedef enum {
+    ONE_PLAYER,
+    TWO_PLAYERS,
+    GRAPH
+} Mode;
 
 typedef struct {
     char character;
@@ -49,10 +56,14 @@ typedef struct{
     char* word_to_guess;
     char* curr_word_state;
     int attempt;
+    Mode mode;
 }GameState;
+
 Texture2D hangman_images[7];
-Texture2D blood_image;
-Sound success_sound,fail_sound;
+
+Texture2D blood_image, heart_texture, back_button;
+Texture2D graph_texture, oneplayer_texture, twoplayers_texture;
+Sound success_sound,fail_sound,heart_beating;
 char text_input[256] = { 0 };
 void changePage(GameState* state,Page page){
     state->current_page=page;
