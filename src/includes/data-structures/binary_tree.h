@@ -271,6 +271,7 @@ int generateImageFromBinaryTree(BinaryTree *root, const char* output_file_name_w
     // Construct the command with the provided output_file_name
     char command[500];
     snprintf(command, sizeof(command), "dot %s | gvpr -c -f %s | neato -n -Tsvg -o %s.svg", output_file_name,tree_parser_path ,output_file_name_without_extension);
+    // snprintf(command, sizeof(command), "dot %s -Tsvg -o %s.svg", output_file_name ,output_file_name_without_extension);
 
     int result = system(command);
     if (result == -1) {

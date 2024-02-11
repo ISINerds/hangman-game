@@ -31,8 +31,7 @@ void drawTop(GameState* state,Rectangle top_rect){
         int word_width = MeasureText(state->curr_word_state, font_size);
         int wordX = top_rect.x + circles_total_width + (top_rect.width-circles_total_width - word_width) / 2;
         int wordY = (top_rect.height) / 2;
-
-        for (int i = 0; i < strlen(state->curr_word_state); i++){
+        for (int i = 0; i < strlen(state->word_to_guess); i++){
             DrawText(TextFormat("%c", toupper(state->curr_word_state[i])), wordX + i * (letter_spacing + 20), wordY, 20, WHITE);
         }
     }
