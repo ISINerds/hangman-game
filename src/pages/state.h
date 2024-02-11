@@ -1,7 +1,8 @@
 #pragma once
 
-
 #include "raylib.h"
+#define RAYGUI_IMPLEMENTATION
+#include "../../external/raygui/raygui.h"
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -13,6 +14,7 @@
 typedef enum{
     WELCOME_PAGE,
     SETTINGS_PAGE,
+    ENTER_WORD_PAGE,
     GAME_PAGE,
 }Page;
 
@@ -51,7 +53,7 @@ typedef struct{
 Texture2D hangman_images[7];
 Texture2D blood_image;
 Sound success_sound,fail_sound;
-
+char text_input[256] = { 0 };
 void changePage(GameState* state,Page page){
     state->current_page=page;
 }
