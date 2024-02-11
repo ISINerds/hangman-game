@@ -2,11 +2,11 @@
 #include "../src/includes/utils/file_parsing.h"
 
 Test(test_random_word, random_word_choice) {
-    WordScore* words_array = (WordScore*)malloc(sizeof(WordScore*)*5);
+    WordScore* words_array = (WordScore*)malloc(sizeof(WordScore)*5);
     words_array[0].word = "school";
     words_array[0].difficulty = MEDIUM;
     
-    words_array[1].word = "apple";
+    words_array[1].word = "job";
     words_array[1].difficulty = EASY;
     
     words_array[2].word = "tree";
@@ -39,7 +39,7 @@ Test(test_random_word, random_word_choice) {
 Test(test_random_word, random_word_choice2) {
     
     // Test case 1: getting a random word with difficulty level EASY that does not exist in the list 
-    WordScore* words_array1 = (WordScore*)malloc(sizeof(WordScore*)*3);
+    WordScore* words_array1 = (WordScore*)malloc(sizeof(WordScore)*3);
     words_array1[0].word = "school";
     words_array1[0].difficulty = MEDIUM;
     
@@ -56,9 +56,9 @@ Test(test_random_word, random_word_choice2) {
     cr_assert(word1 == NULL , "Unexpected result when trying to get a random word with difficulty EASY non-existing in the list.");
 
     // Test case 2: getting a random word with difficulty level MEDIUM that does not exist in the list 
-    WordScore* words_array2 = (WordScore*)malloc(sizeof(WordScore*)*4);
+    WordScore* words_array2 = (WordScore*)malloc(sizeof(WordScore)*4);
     
-    words_array2[0].word = "apple";
+    words_array2[0].word = "job";
     words_array2[0].difficulty = EASY;
     
     words_array2[1].word = "tree";
@@ -77,9 +77,9 @@ Test(test_random_word, random_word_choice2) {
     cr_assert(word2 == NULL , "Unexpected result when trying to get a random word with difficulty MEDIUM non-existing in the list.");
 
     // Test case 3: getting a random word with difficulty level HARD that does not exist in the list 
-    WordScore* words_array3 = (WordScore*)malloc(sizeof(WordScore*)*4);
+    WordScore* words_array3 = (WordScore*)malloc(sizeof(WordScore)*4);
     
-    words_array3[0].word = "apple";
+    words_array3[0].word = "job";
     words_array3[0].difficulty = EASY;
     
     words_array3[1].word = "tree";
