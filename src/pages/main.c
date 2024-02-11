@@ -7,6 +7,7 @@
 #include "./welcome_page.h"
 #include "./settings_page.h"
 #include "./game_page.h"
+#include "./mode_selection.h"
 
 
 void drawBackgroundImage(Texture2D background_image,int screen_width,int screen_height){
@@ -34,13 +35,21 @@ int main(void){
     InitAudioDevice();
     success_sound = LoadSound("./assets/sound/success.mp3");
     fail_sound = LoadSound("./assets/sound/fail.mp3");
+    heart_beating = LoadSound("./assets/sound/heart_beating.mp3");
     for(int i=0;i<7;i++){
         char filePath[50];
         snprintf(filePath, sizeof(filePath), "./assets/images/Hangman/hangman%d.png",i);
         hangman_images[i]=LoadTexture(filePath);
     }
     blood_image=LoadTexture("./assets/images/Hangman/blood.png");
+    heart_texture = LoadTexture("./assets/images/Hangman/heart.png");
+    back_button = LoadTexture("./assets/images/Hangman/back_button.png");
+    oneplayer_texture = LoadTexture("./assets/images/Hangman/oneplayer.png");
+    twoplayers_texture = LoadTexture("./assets/images/Hangman/twoplayers.png");
+    graph_texture = LoadTexture("./assets/images/Hangman/graph.png");
+
     Texture2D background_image = LoadTexture("./assets/images/background.png");
+
     SetTargetFPS(60);
 
     while (!WindowShouldClose()) {
@@ -60,6 +69,9 @@ int main(void){
             case GAME_PAGE:
                 updateGamePage(&state,w,h);
                 break;
+            case MODE_SELECTION:
+                updateModeSelectionPage(&state);
+                break;
             default:
                 break;
         }
@@ -73,6 +85,9 @@ int main(void){
                 break;
             case GAME_PAGE:
                 drawGamePage(&state,w,h);
+                break;
+            case MODE_SELECTION:
+                drawModeSelectionPage(&state);
                 break;
             default:
                 break;

@@ -8,41 +8,25 @@ bool isMouseOverEasyButton;
 bool isMouseOverMediumButton;
 bool isMouseOverHardButton;
 
-void drawSettingsPage(GameState* state,int screenWidth,int screenHeight){
-    const int textSize= 30;
-    float roundness = 0.5f;
-    Color Darkblue = (Color){26, 31, 68, 255}; 
-    Color lightBlue = (Color){81, 105, 162, 255}; 
-    const int levelbuttonWidth = 200;
-    const int levelbuttonHeight = 50;
+Color circleColors[] = {
+    (Color){0, 178, 13, 255},    // #00b20d
+    (Color){255, 216, 0, 255},   // #ffd800
+    (Color){232, 0, 145, 255},   // #e80091
+    (Color){0, 156, 225, 255},   // #009ce1
+    (Color){255, 141, 0, 255},   // #ff8d00
+    (Color){154, 52, 161, 255}   // #9a34a1
+};
 
-    Color circleColors[] = {
-            (Color){0, 178, 13, 255},    // #00b20d
-            (Color){255, 216, 0, 255},   // #ffd800
-            (Color){232, 0, 145, 255},   // #e80091
-            (Color){0, 156, 225, 255},   // #009ce1
-            (Color){255, 141, 0, 255},   // #ff8d00
-            (Color){154, 52, 161, 255}   // #9a34a1
-        };
+const int textSize= 30;
+float roundness = 0.5f;
+Color Darkblue = (Color){26, 31, 68, 255}; 
+Color lightBlue = (Color){81, 105, 162, 255}; 
+const int levelbuttonWidth = 200;
+const int levelbuttonHeight = 50;
 
-
-
-    //SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    //InitWindow(screenWidth, screenHeight, "Level choice");
-
-    // Image backgroundImage = LoadImage("././src/background.png");
-    // Texture2D backgroundTexture = LoadTextureFromImage(backgroundImage);
-    // SetTargetFPS(60);
-        // Update
-        
-        // Draw
-        BeginDrawing();
-
+void drawSettingsPage(GameState* state,int screenWidth,int screenHeight){        
         int w = GetRenderWidth();
         int h = GetRenderHeight();
-
-        // DrawTexture(backgroundTexture, 0, 0, WHITE);
-
 
         Rectangle choiceRec ={w/7, h/4, 0.7*w, h*0.2};
         Rectangle easyRect = {w/7, h/4 + choiceRec.height + 0.1*h, w*0.2, (float)levelbuttonHeight};
@@ -61,7 +45,7 @@ void drawSettingsPage(GameState* state,int screenWidth,int screenHeight){
             DrawCircle(w/5 + i*(w*0.008 + w*0.012) , h/3.5, w*0.008, circleColors[i]);
 
         }
-        // Check if mouse is over the button
+
         Vector2 mousePosition = GetMousePosition();
 
         isMouseOverEasyButton = CheckCollisionPointRec(mousePosition, easyRect);
@@ -83,12 +67,11 @@ void drawSettingsPage(GameState* state,int screenWidth,int screenHeight){
         DrawRectangleRoundedLines(hardRect, roundness+0.1, 0, 5, lightBlue);       
         
         DrawRectangleRoundedLines(choiceRec, roundness+0.1, 0, 5, lightBlue);
-        
-        EndDrawing();
 }
 
 void updateSettingsPage(GameState* state,int screen_width,int screen_height){
     
+    state->attempt=0;
     WordList words= state->word_list;
     if (isMouseOverEasyButton && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         char* chosen_word = getRandomWord(EASY, words);
