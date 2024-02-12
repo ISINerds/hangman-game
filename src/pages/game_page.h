@@ -7,7 +7,20 @@ void drawGamePage(GameState* state,int screen_width,int screen_height);
 void updateGamePage(GameState* state,int screen_width,int screen_height);
 bool replay_button_clicked = false ;
 bool game_over = false ; 
+bool win = true;
+
 // contains the current state of the word
+
+bool compareString(char* s1,char* s2){
+    int i=0,j=0;
+    while(s1[i]!='\0'&&s2[j]!='\0'){
+        if(tolower(s1[i])!=tolower(s2[j]))return false;
+        i++;
+        j++;
+    }
+    return true;
+}
+
 void drawTop(GameState* state,Rectangle top_rect){
     //circles
     float circle_radius = 10.0f;
@@ -31,10 +44,8 @@ void drawTop(GameState* state,Rectangle top_rect){
         for (int i = 0; i < strlen(state->word_to_guess); i++){
             DrawText(TextFormat("%c", toupper(state->curr_word_state[i])), wordX + i * (letter_spacing + 20), wordY, 20, WHITE);
         }
-        if(state->curr_word_state == state->word_to_guess){
-            game_over = true;
-        }
     }
+    // printf("comp  = %d , wtg = %s ,wcs= %s\n",compareString(state->curr_word_state,state->word_to_guess),state->word_to_guess,state->curr_word_state);
 }
 
 void drawWinLoseMessage(GameState* state, Rectangle keyboard_rect){
@@ -58,13 +69,13 @@ void drawWinLoseMessage(GameState* state, Rectangle keyboard_rect){
     DrawRectangleRounded(rec, roundness, (int)segments, Fade(dark_blue, 0.2f));
     DrawRectangleRoundedLines(rec, roundness, (int)segments, line_thick, Fade(gray, 0.4f));
     
-    const char* text = "YOU LOST";
+    const char* text =win?"YOU WIN":"YOU LOST";
     Vector2 text_size = MeasureTextEx(GetFontDefault(), text, 30, 1);
     float textX = rec.x + w/9;
     float textY = rec.y + h/7;
     DrawText(text, textX, textY, h/14, pink);
     
-    const char* text1 = "The word was";
+    const char* text1 = win?"":"THE WORD WAS";
     Vector2 text_size1 = MeasureTextEx(GetFontDefault(), text1, 5, 1);
     float text1X = rec.x + w/14;
     float text2Y = rec.y + h/3.5;
@@ -102,14 +113,7 @@ void drawWinLoseMessage(GameState* state, Rectangle keyboard_rect){
     }
 }
 
-// DrawRectangleRoundedLines(keyboard_rect,0.2,1,1,ColorFromHSV(120,1,1));
 void drawKeyboard(GameState* state, Rectangle keyboard_rect) {
-    char *msg1, *msg2;
-    msg1 = (char*)malloc(sizeof(char)*100);
-    msg2 = (char*)malloc(sizeof(char)*100);
-    if(state->attempt == 6){
-        drawWinLoseMessage(state,keyboard_rect);
-    }else  {
     
     int width = keyboard_rect.width;
     int height = keyboard_rect.height;
@@ -176,7 +180,7 @@ void drawKeyboard(GameState* state, Rectangle keyboard_rect) {
             kk++;
         }
     }
-    }
+    // }
 }
 void drawHangMan(GameState* state, Rectangle hangman_rect, int screen_width, int screen_height) {
     if (state->attempt >= 0 && state->attempt <= 6) {
@@ -212,16 +216,11 @@ void drawGamePage(GameState* state,int screen_width,int screen_height){
         .width = screen_width*0.4,
         .height = screen_height*0.7,
     };
-    // if(!game_over){
-    //     drawKeyboard(state,keyboard_rect) ;
-    // } else {
-    //     drawWinLoseMessage(state, keyboard_rect);
-    // }
-    // if(!game_over){
-    drawKeyboard(state, keyboard_rect);
-    // }else  {
-    // /drawWinLoseMessage(state,keyboard_rect);
-    // }
+    if(!game_over){
+        drawKeyboard(state,keyboard_rect) ;
+    } else {
+        drawWinLoseMessage(state, keyboard_rect);
+    }
     Rectangle hangman_rect = {
         .x = (screen_width*0.05),
         .y = (screen_height*0.04) + screen_height*0.125 + (screen_height*0.04),
@@ -232,7 +231,12 @@ void drawGamePage(GameState* state,int screen_width,int screen_height){
 
 }
 void updateTop(GameState* state,int screen_width,int screen_height){
-
+    if(compareString(state->curr_word_state,state->word_to_guess)==1||state->attempt==MAX_ATTEMPT){
+        game_over=true;
+        if(compareString(state->curr_word_state,state->word_to_guess)==0){
+            win=false;
+        }
+    }
 }
 
 int customIsKeyDown(KeyboardLayout layout){
@@ -344,34 +348,7 @@ void updateHangMan(GameState* state,int screen_width,int screen_height){
 
 }
 
-//win lose message 
-void toLowercase(char *str) {
-    while (*str) {
-        *str = tolower(*str);
-        str++;
-    }
-}
-void getEndGameMessages(GameState* state,int max_attempts, char* msg1, char* msg2){
-    toLowercase(state->word_to_guess);
-    toLowercase(state->curr_word_state);
-    if(strcmp(state->word_to_guess, state->curr_word_state)==0 && state->attempt <= max_attempts){
-        // state->mode == one_player ? strcpy(msg1, "You Won") : strcpy(msg1, "Player 2 Won");
-        sprintf(msg2,"Congratulations!");
-        printf("You won\n");
-        // state->win_state = 1;
-    }else if(state->attempt == max_attempts && strcmp(state->word_to_guess, state->curr_word_state)!=0){
-        // state->mode == one_player ? strcpy(msg1, "You Lost") : strcpy(msg1, "Player 2 Lost");
-        sprintf(msg2, "The word is %s",state->word_to_guess);
-        printf("You lost\n");
-        // state->win_state = 0; 
-    } 
-}
-
 void updateWinLoseMessage(GameState* state,int screen_width,int screen_height){
-    char *msg1, *msg2;
-    msg1 = (char*)malloc(sizeof(char)*100);
-    msg2 = (char*)malloc(sizeof(char)*100);
-    getEndGameMessages(state, 6, msg1, msg2);
     if(replay_button_clicked){
         // if(state->mode == one_player){
             state->attempt = 0 ;
@@ -393,7 +370,7 @@ void updateWinLoseMessage(GameState* state,int screen_width,int screen_height){
 
 void updateGamePage(GameState* state,int screen_width,int screen_height){
     updateTop(state,screen_width,screen_height);
-    if(state->win_state=-1){
+    if(!game_over){
         updateKeyboard(state,screen_width,screen_height);
         updateHangMan(state,screen_width,screen_height);
     }else {
@@ -402,9 +379,7 @@ void updateGamePage(GameState* state,int screen_width,int screen_height){
     // char *msg1, *msg2;
     // msg1 = (char*)malloc(sizeof(char)*100);
     // msg2 = (char*)malloc(sizeof(char)*100);
-    // if(getEndGameMessages(state, 6, msg1, msg2)==1){
-    //     changePage(state, WELCOME_PAGE);
-    // };
+    // getEndGameMessages(state, 6, msg1, msg2);
     
     // if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
     //     state->current_page=WELCOME_PAGE;
