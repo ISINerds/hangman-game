@@ -9,6 +9,7 @@
 #include "./game_page.h"
 #include "./mode_selection.h"
 #include "./enter_word_page.h"
+#include "./graph_page.h"
 
 void drawBackgroundImage(Texture2D background_image,int screen_width,int screen_height){
         float scaleX = (float)screen_width / background_image.width;
@@ -43,7 +44,7 @@ int main(void){
     WordList words = parseFile("./assets/words.txt");
     BinaryTree* root = NULL;
     root = addWords(words,root);
-    generateImageFromBinaryTree(root,"./build/tree","./assets/tree.gv");
+    // generateImageFromBinaryTree(root,"./build/tree","./assets/tree.gv");
     GameState state = {
         .current_page=WELCOME_PAGE,
         .keyboard = initKeyBoard(),
@@ -98,6 +99,9 @@ int main(void){
             case ENTER_WORD_PAGE:
                 updateEnterWordPage(&state,w,h);
                 break;
+            case GRAPH_PAGE:
+                updateGraphPage(&state,w,h);
+                break;
             default:
                 break;
         }
@@ -117,6 +121,9 @@ int main(void){
                 break;
             case ENTER_WORD_PAGE:
                 drawEnterWordPage(&state,w,h);
+                break;
+            case GRAPH_PAGE:
+                drawGraphPage(&state,w,h);
                 break;
             default:
                 break;
