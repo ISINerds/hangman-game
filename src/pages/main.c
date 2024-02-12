@@ -29,6 +29,7 @@ int main(void){
         .root=root,
         .attempt=0,
         .word_list=words,
+        .win_state = -1,
     };
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Hangman");
     InitAudioDevice();

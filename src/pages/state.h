@@ -47,6 +47,7 @@ typedef struct{
     char* word_to_guess;
     char* curr_word_state;
     int attempt;
+    int win_state;
 }GameState;
 Texture2D hangman_images[7];
 Texture2D blood_image;
@@ -111,6 +112,6 @@ Keyboard initKeyBoard(){
         keyboard.keys[i].character='A'+i;
         keyboard.keys[i].state=KEY_NOT_CLICKED;
     }
-    keyboard.keyboard_layout=getKeyboardLayout();
+    // keyboard.keyboard_layout=getKeyboardLayout();
     return keyboard;
 }
