@@ -45,7 +45,7 @@ int main(void){
     root = addWords(words,root);
     generateImageFromBinaryTree(root,"./build/tree","./assets/tree.gv");
     GameState state = {
-        .current_page=ENTER_WORD_PAGE,
+        .current_page=WELCOME_PAGE,
         .keyboard = initKeyBoard(),
         .root=root,
         .attempt=0,
@@ -57,6 +57,7 @@ int main(void){
     success_sound = LoadSound("./assets/sound/success.mp3");
     fail_sound = LoadSound("./assets/sound/fail.mp3");
     heart_beating = LoadSound("./assets/sound/heart_beating.mp3");
+    click_sound = LoadSound("./assets/sound/click-button.mp3");
     for(int i=0;i<7;i++){
         char filePath[50];
         snprintf(filePath, sizeof(filePath), "./assets/images/Hangman/hangman%d.png",i);

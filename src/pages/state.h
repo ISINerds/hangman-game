@@ -63,7 +63,7 @@ Texture2D hangman_images[7];
 
 Texture2D blood_image, heart_texture, back_button;
 Texture2D graph_texture, oneplayer_texture, twoplayers_texture;
-Sound success_sound,fail_sound,heart_beating;
+Sound success_sound,fail_sound,heart_beating, click_sound;
 char text_input[256] = { 0 };
 void changePage(GameState* state,Page page){
     state->current_page=page;
