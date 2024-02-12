@@ -3,13 +3,11 @@
 
 void drawModeSelectionPage(GameState* state);
 void updateModeSelectionPage(GameState* state);
-//const int textSize= 30;
-//float roundness = 0.5f;
-//Color Darkblue = (Color){26, 31, 68, 255}; 
-//Color lightBlue = (Color){81, 105, 162, 255}; 
+
 bool isMouseOver1Player;
 bool isMouseOver2Players;
 bool isMouseOverGraph;
+bool wasHovering = false;
 
 void drawModeSelectionPage(GameState* state) {
 
@@ -60,7 +58,17 @@ void drawModeSelectionPage(GameState* state) {
     isMouseOver2Players = CheckCollisionPointRec(mousePosition, twoplayersRect);
     isMouseOverGraph = CheckCollisionPointRec(mousePosition, graphRect);                    
     //DrawTextureRec(oneplayer_texture, oneplayerRect, (Vector2){ oneplayerRect.x, oneplayerRect.y }, WHITE);
-
+    if (isMouseOver1Player || isMouseOver2Players || isMouseOverGraph) {
+        if (!wasHovering) {
+            PlaySound(click_sound);
+        }
+        wasHovering = true;
+    } else {
+        if (wasHovering) {
+            StopSound(click_sound);
+        }
+        wasHovering = false;
+    }
 }
 
 void updateModeSelectionPage(GameState* state) {

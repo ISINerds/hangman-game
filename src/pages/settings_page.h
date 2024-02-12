@@ -7,6 +7,7 @@ void updateSettingsPage(GameState* state,int screen_width,int screen_height);
 bool isMouseOverEasyButton;
 bool isMouseOverMediumButton;
 bool isMouseOverHardButton;
+bool wasHoveringDifficulty= false;
 
 Color circleColors[] = {
     (Color){0, 178, 13, 255},    // #00b20d
@@ -67,6 +68,18 @@ void drawSettingsPage(GameState* state,int screenWidth,int screenHeight){
         DrawRectangleRoundedLines(hardRect, roundness+0.1, 0, 5, lightBlue);       
         
         DrawRectangleRoundedLines(choiceRec, roundness+0.1, 0, 5, lightBlue);
+
+        if (isMouseOverEasyButton || isMouseOverHardButton || isMouseOverMediumButton) {
+            if (!wasHoveringDifficulty) {
+                PlaySound(click_sound);
+            }
+            wasHoveringDifficulty = true;
+        } else {
+            if (wasHoveringDifficulty) {
+                StopSound(click_sound);
+            }
+            wasHoveringDifficulty = false;
+        }
 }
 
 void updateSettingsPage(GameState* state,int screen_width,int screen_height){
