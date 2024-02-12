@@ -51,7 +51,6 @@ int main(void){
         .root=root,
         .attempt=0,
         .word_list=words,
-        .win_state = -1,
     };
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Hangman");
     InitAudioDevice();
@@ -139,7 +138,7 @@ int main(void){
         UnloadTexture(hangman_images[i]);
     }
     UnloadTexture(blood_image);
-
+    UnloadTexture(back_button);
     CloseWindow();
     return 0;
 }

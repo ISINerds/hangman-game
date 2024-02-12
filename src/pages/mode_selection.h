@@ -73,18 +73,15 @@ void drawModeSelectionPage(GameState* state) {
 
 void updateModeSelectionPage(GameState* state) {
     if (isMouseOver1Player && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-        printf("One player was clicked \n");
         state->current_page = SETTINGS_PAGE;
         state->mode = ONE_PLAYER;
     }
     else if(isMouseOver2Players && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-        printf("two players was clicked \n");
-        //state->current_page=
+        state->current_page=ENTER_WORD_PAGE;
         state->mode = TWO_PLAYERS;
     }
     else if (isMouseOverGraph && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-        printf("graph was clicked \n");
-        //state->current_page=
+        state->current_page=GRAPH_PAGE;
         state->mode = GRAPH;
     }
 }

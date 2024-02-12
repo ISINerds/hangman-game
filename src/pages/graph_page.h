@@ -4,13 +4,25 @@
 
 void drawGraphPage(GameState* state,int screen_width,int screen_height);
 void updateGraphPage(GameState* state,int screen_width,int screen_height);
-Texture2D graph_texture;
+Texture2D gp_graph_texture;
 bool one_time=true;
 Camera2D camera = { 0 };
 Vector2 mouse_position = { 0 };
 Vector2 previous_mouse_position = { 0 };
 bool is_dragging = false;
+bool gp_is_mouse_over_back_button=false;
 void drawGraphPage(GameState* state, int screen_width, int screen_height) {
+
+    DrawTexturePro(back_button,
+            (Rectangle){ 0, 0, (float)back_button.width, (float)back_button.height },
+            (Rectangle){30,0,30,30},
+            (Vector2){ 0, 0},
+            0.0f,
+            WHITE);
+
+
+    gp_is_mouse_over_back_button = CheckCollisionPointRec(GetMousePosition(), (Rectangle){30,0,30,30});
+
     previous_mouse_position = mouse_position;
     mouse_position = GetMousePosition();
 
@@ -58,11 +70,11 @@ void drawGraphPage(GameState* state, int screen_width, int screen_height) {
         camera.target.y=0;
     }
 
-    if(camera.target.x+scissorRect.width>=graph_texture.width){
-        camera.target.x=graph_texture.width-scissorRect.width;
+    if(camera.target.x+scissorRect.width>=gp_graph_texture.width){
+        camera.target.x=gp_graph_texture.width-scissorRect.width;
     }
-    if(camera.target.y+scissorRect.height>=graph_texture.height){
-        camera.target.y=graph_texture.height-scissorRect.height;
+    if(camera.target.y+scissorRect.height>=gp_graph_texture.height){
+        camera.target.y=gp_graph_texture.height-scissorRect.height;
     }
 
     BeginMode2D(camera);
@@ -70,7 +82,7 @@ void drawGraphPage(GameState* state, int screen_width, int screen_height) {
     
     BeginScissorMode((int)scissorRect.x, (int)scissorRect.y, (int)scissorRect.width, (int)scissorRect.height);
 
-    DrawTexture(graph_texture, scissorRect.x, scissorRect.y, WHITE);
+    DrawTexture(gp_graph_texture, scissorRect.x, scissorRect.y, WHITE);
 
     EndScissorMode();
 
@@ -82,8 +94,8 @@ void updateGraphPage(GameState* state,int screen_width,int screen_height){
         DrawText("Loading, please wait...", screen_width / 2 - MeasureText("Loading, please wait...", 20) / 2, screen_height / 2 - 10, 20, WHITE);
         EndDrawing();
         generateImageFromBinaryTree(state->root,"./build/tree","./assets/tree.gv");        
-        graph_texture = LoadTexture("./build/tree.png");
-        // camera.target = (Vector2){ graph_texture.width / 2.0f, graph_texture.height / 2.0f };
+        gp_graph_texture = LoadTexture("./build/tree.png");
+        // camera.target = (Vector2){ gp_graph_texture.width / 2.0f, gp_graph_texture.height / 2.0f };
         camera.target = (Vector2){ 0.0f, 0.0f };
         // camera.offset = (Vector2){ screen_width / 2.0f, screen_height / 2.0f };
         camera.offset = (Vector2){ 0.0f,0.0f };
@@ -92,19 +104,22 @@ void updateGraphPage(GameState* state,int screen_width,int screen_height){
         one_time=false;
     }
     camera.zoom += ((float)GetMouseWheelMove() * 0.05f);
+    if(gp_is_mouse_over_back_button&&IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
+        state->current_page=MODE_SELECTION;
+    }
 }
 // Image graph_image;
-// Texture2D graph_texture;
+// Texture2D gp_graph_texture;
 // bool one_time=true;
 // void drawGraphPage(GameState* state,int screen_width,int screen_height){
-//     DrawTexture(graph_texture, 0, 0, WHITE);
+//     DrawTexture(gp_graph_texture, 0, 0, WHITE);
 // }
 
 // void updateGraphPage(GameState* state,int screen_width,int screen_height){
 //     if(one_time){
 //         generateImageFromBinaryTree(state->root,"./build/tree","./assets/tree.gv");
 //         graph_image=LoadImageSvg("./build/tree.svg", screen_width, screen_height);
-//         graph_texture=LoadTextureFromImage(graph_image);
+//         gp_graph_texture=LoadTextureFromImage(graph_image);
 //         one_time=false;
 //     }
 
