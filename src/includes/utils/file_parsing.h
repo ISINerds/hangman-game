@@ -111,22 +111,14 @@ WordList parseFile(const char *file_path) {
             printf("Error allocating memory");
             exit(EXIT_FAILURE);
         }
-
+        char wordd[100];
         for (int i = 0; i < words.words_array_size; i++) {
-            size_t buffer_size = 0;
-            getline(&words.words_array[i].word, &buffer_size, file);
-
-            // remove the newline character if exist
-            size_t length = strlen(words.words_array[i].word);
-            if (words.words_array[i].word[length - 1] == '\n') {
-                words.words_array[i].word[length - 2] = '\0';
-            }
+            fscanf(file, "%s", wordd);
+            words.words_array[i].word = (char*)malloc((strlen(wordd)+1)*sizeof(char));
+            strcpy(words.words_array[i].word,wordd);
             words.words_array[i].difficulty = getWordDifficulty(words.words_array[i].word);
-            printf("%s -- %d\n",words.words_array[i].word,words.words_array[i].difficulty);
-            // printf("%s -- %.2f\n",words.words_array[i].word,score);
         }
         fclose(file);
-
         return words;
 
     }   

@@ -2,7 +2,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include "../utils/file_parsing.h"
-
+#include<stdbool.h>
 typedef struct BinaryTree BinaryTree;
 struct BinaryTree{
     char data;
@@ -37,7 +37,7 @@ BinaryTree* createBinaryTreeFromWord(const char *word){
 }
 
 BinaryTree* createBinaryTree(const char *word){
-    if(*word == '\0')return NULL;
+    if(*word == '\0')return createNode('\0',NULL,NULL);
     else return createBinaryTreeFromWord(word);
 }
 
@@ -270,8 +270,8 @@ int generateImageFromBinaryTree(BinaryTree *root, const char* output_file_name_w
 
     // Construct the command with the provided output_file_name
     char command[500];
-    snprintf(command, sizeof(command), "dot %s | gvpr -c -f %s | neato -n -Tsvg -o %s.svg", output_file_name,tree_parser_path ,output_file_name_without_extension);
-    // snprintf(command, sizeof(command), "dot %s -Tsvg -o %s.svg", output_file_name ,output_file_name_without_extension);
+    // snprintf(command, sizeof(command), "dot %s | gvpr -c -f %s | neato -n -Tpng -o %s.png", output_file_name,tree_parser_path ,output_file_name_without_extension);
+    snprintf(command, sizeof(command), "dot %s -Tpng -o %s.png", output_file_name ,output_file_name_without_extension);
 
     int result = system(command);
     if (result == -1) {

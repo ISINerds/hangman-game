@@ -15,6 +15,7 @@ typedef enum{
     WELCOME_PAGE,
     SETTINGS_PAGE,
     ENTER_WORD_PAGE,
+    GRAPH_PAGE,
     GAME_PAGE,
 }Page;
 
