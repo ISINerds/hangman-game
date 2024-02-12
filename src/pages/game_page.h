@@ -5,8 +5,8 @@
 #include<ctype.h>
 void drawGamePage(GameState* state,int screen_width,int screen_height);
 void updateGamePage(GameState* state,int screen_width,int screen_height);
-bool replay_button_clicked = false ;
-bool game_over = false ; 
+bool replay_button_clicked = false;
+bool game_over = false;
 bool win = true;
 bool isMouseOverBackButton;
 
@@ -29,24 +29,16 @@ void drawTop(GameState* state,Rectangle top_rect){
 
     int w = GetRenderWidth();
     int h = GetRenderHeight();
-
-    Rectangle back_rect = {w/12,h/18,w/12,h/8};
-
-    //DrawRectangleRec(back_rect, RED);
-
-    //DrawTexture(back_button, back_rect.x, back_rect.y, WHITE);
     DrawTexturePro(back_button,
                 (Rectangle){ 0, 0, (float)back_button.width, (float)back_button.height },
-                back_rect,
-                (Vector2){ back_rect.width / 2, back_rect.height / 2 },
+                (Rectangle){30,0,60,60},
+                (Vector2){ 0, 0},
                 0.0f,
                 WHITE);
-    Rectangle click_back_button = {w/20,h/42,w/14,h/9};
-    //DrawRectangleRec(click_back_button,RED);
 
     Vector2 mousePosition = GetMousePosition();
 
-    isMouseOverBackButton = CheckCollisionPointRec(mousePosition, click_back_button);
+    isMouseOverBackButton = CheckCollisionPointRec(mousePosition, (Rectangle){30,0,60,60});
 
     float scaleFactor = 0.5f + 0.5f * sinf(GetTime() * (state->attempt+4)); // Adjust the speed of pulsation with the multiplier
     Rectangle heartRect = {
@@ -113,13 +105,13 @@ void drawWinLoseMessage(GameState* state, Rectangle keyboard_rect){
     DrawRectangleRounded(rec, roundness, (int)segments, Fade(dark_blue, 0.2f));
     DrawRectangleRoundedLines(rec, roundness, (int)segments, line_thick, Fade(gray, 0.4f));
     
-    const char* text =win?"YOU WIN":"YOU LOST";
+    const char* text =win?(state->mode==ONE_PLAYER?"YOU WON":"PLAYER2 WON"):(state->mode==ONE_PLAYER?"YOU LOST":"PLAYER2 LOST");
     Vector2 text_size = MeasureTextEx(GetFontDefault(), text, 30, 1);
     float textX = rec.x + w/9;
     float textY = rec.y + h/7;
     DrawText(text, textX, textY, h/14, pink);
     
-    const char* text1 = win?"":"THE WORD WAS";
+    const char* text1 = "THE WORD WAS";
     Vector2 text_size1 = MeasureTextEx(GetFontDefault(), text1, 5, 1);
     float text1X = rec.x + w/14;
     float text2Y = rec.y + h/3.5;
@@ -281,7 +273,13 @@ void updateTop(GameState* state,int screen_width,int screen_height){
             win=false;
         }
     }
-    if (isMouseOverBackButton && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) state->current_page=MODE_SELECTION;
+    if (isMouseOverBackButton && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
+        state->attempt = 0 ;
+        state->keyboard = initKeyBoard();
+        game_over=false;
+        replay_button_clicked=false;
+        state->current_page=MODE_SELECTION;
+    }
 }
 
 int customIsKeyDown(KeyboardLayout layout){
@@ -395,20 +393,23 @@ void updateHangMan(GameState* state,int screen_width,int screen_height){
 
 void updateWinLoseMessage(GameState* state,int screen_width,int screen_height){
     if(replay_button_clicked){
-        // if(state->mode == one_player){
             state->attempt = 0 ;
             state->keyboard = initKeyBoard();
+            game_over=false;
+            replay_button_clicked=false;
+            if(state->mode==TWO_PLAYERS){
+                state->current_page=ENTER_WORD_PAGE;
+                return;
+            }
             char* chosen_word = getRandomWord(state->game_difficulty, state->word_list);
+            printf("game diff = %d\n",state->game_difficulty);
             state->word_to_guess=chosen_word;
             int len = strlen(chosen_word);
-            state->curr_word_state=malloc((len + 1)*sizeof(char));
+            state->curr_word_state=(char*)malloc((len + 1)*sizeof(char));
             char* underscores = (char*)malloc((len + 1) * sizeof(char));
             for(int i=0;i<len;i++)underscores[i]='_';
             strcpy(state->curr_word_state,underscores);
-            // updateGamePage(state, screen_width, screen_height);
-        // } else if (state->mode == two_player){
-                // changePage(state, ENTER_WORD);
-        // }
+            printf("%s\n",state->word_to_guess);
     }
 }
 

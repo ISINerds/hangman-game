@@ -91,7 +91,8 @@ KeyboardLayout getKeyboardLayout(void){
             while (*layout == ' ' || *layout == '\t') {
                 layout++;
             }
-
+//             setxkbmap -query | grep layout
+// layout:     fr,ara,us
             char *newline = strchr(layout, '\n');
             if (newline != NULL) {
                 *newline = '\0';

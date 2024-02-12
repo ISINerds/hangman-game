@@ -24,8 +24,18 @@ Color Darkblue = (Color){26, 31, 68, 255};
 Color lightBlue = (Color){81, 105, 162, 255}; 
 const int levelbuttonWidth = 200;
 const int levelbuttonHeight = 50;
+bool sp_is_mouse_over_back_button=false;
+void drawSettingsPage(GameState* state,int screenWidth,int screenHeight){
+        DrawTexturePro(back_button,
+            (Rectangle){ 0, 0, (float)back_button.width, (float)back_button.height },
+            (Rectangle){30,0,60,60},
+            (Vector2){ 0, 0},
+            0.0f,
+            WHITE);
 
-void drawSettingsPage(GameState* state,int screenWidth,int screenHeight){        
+
+        sp_is_mouse_over_back_button = CheckCollisionPointRec(GetMousePosition(), (Rectangle){30,0,60,60});
+
         int w = GetRenderWidth();
         int h = GetRenderHeight();
 
@@ -95,6 +105,7 @@ void updateSettingsPage(GameState* state,int screen_width,int screen_height){
         for(int i=0;i<len;i++)underscores[i]='_';
         strcpy(state->curr_word_state,underscores);
         printf("The chosen word is : %s \n", chosen_word);
+        state->game_difficulty=EASY;
         state->current_page=GAME_PAGE;
     }
     if (isMouseOverMediumButton && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
@@ -106,6 +117,7 @@ void updateSettingsPage(GameState* state,int screen_width,int screen_height){
         for(int i=0;i<len;i++)underscores[i]='_';
         strcpy(state->curr_word_state,underscores);
         printf("The chosen word is : %s \n", chosen_word);
+        state->game_difficulty=MEDIUM;
         state->current_page=GAME_PAGE;
     }
     if (isMouseOverHardButton && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
@@ -117,7 +129,10 @@ void updateSettingsPage(GameState* state,int screen_width,int screen_height){
         for(int i=0;i<len;i++)underscores[i]='_';
         strcpy(state->curr_word_state,underscores);
         printf("The chosen word is : %s \n", chosen_word);
+        state->game_difficulty=HARD;
         state->current_page=GAME_PAGE;
     }
-
+    if(sp_is_mouse_over_back_button&&IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
+        state->current_page=MODE_SELECTION;
+    }
 }

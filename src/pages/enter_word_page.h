@@ -6,6 +6,7 @@ void drawEnterWordPage(GameState* state,int screen_width,int screen_height);
 void updateEnterWordPage(GameState* state,int screen_width,int screen_height);
 bool show_popup=false;
 bool empty_message=false;
+bool ewp_is_mouse_over_back_button=false;
 bool allAlpha(const char *text_input) {
     for (int i = 0; text_input[i] != '\0'; i++) {
         if (!isalpha(text_input[i]))return false;
@@ -14,6 +15,20 @@ bool allAlpha(const char *text_input) {
 }
 
 void drawEnterWordPage(GameState* state,int screen_width,int screen_height){
+    int w = GetRenderWidth();
+    int h = GetRenderHeight();
+
+    
+    DrawTexturePro(back_button,
+                (Rectangle){ 0, 0, (float)back_button.width, (float)back_button.height },
+                (Rectangle){30,0,60,60},
+                (Vector2){ 0, 0},
+                0.0f,
+                WHITE);
+    Vector2 mousePosition = GetMousePosition();
+
+    ewp_is_mouse_over_back_button = CheckCollisionPointRec(mousePosition, (Rectangle){30,0,60,60});
+// ----------
     const int textSize= screen_height/13;
     float roundness = 0.5f;
     Color Darkblue = (Color){26, 31, 68, 255}; 
@@ -99,6 +114,9 @@ void updateEnterWordPage(GameState* state,int screen_width,int screen_height){
                 empty_message=false;
             }
         }
+    }
+    if(ewp_is_mouse_over_back_button&&IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
+        state->current_page=MODE_SELECTION;
     }
 
 }
