@@ -9,6 +9,8 @@ bool replay_button_clicked = false;
 bool game_over = false;
 bool win = true;
 bool isMouseOverBackButton;
+static bool winSoundPlayed = false; 
+static bool loseSoundPlayed = false; 
 
 // contains the current state of the word
 
@@ -48,11 +50,11 @@ void drawTop(GameState* state,Rectangle top_rect){
         (float)heart_texture.height * scaleFactor
     };
 
-    if ((6 - state->attempt) % 7 == 1) {
+    if ((6 - state->attempt) % 7 == 1 && !game_over) {
         if (!IsSoundPlaying(heart_beating)) {
             PlaySound(heart_beating);
         }
-    } else if ((6 - state->attempt) % 7 == 0) {
+    } else if (game_over || (6 - state->attempt) % 7 == 0)  {
         StopSound(heart_beating);
     }
     
@@ -147,6 +149,21 @@ void drawWinLoseMessage(GameState* state, Rectangle keyboard_rect){
     } else {
         replay_button_clicked = false;
     }
+    if(game_over && win && !winSoundPlayed){
+        if(IsSoundPlaying(heart_beating)) StopSound(heart_beating);
+        if(!IsSoundPlaying(win_sound)) {
+            PlaySound(win_sound);
+            winSoundPlayed=true;
+        }
+    }
+    if (!win && !loseSoundPlayed && game_over) {
+        if(IsSoundPlaying(heart_beating)) StopSound(heart_beating);
+        if(!IsSoundPlaying(wah_sound)) {
+            PlaySound(wah_sound);
+            loseSoundPlayed=true;
+        }        
+    }
+
 }
 
 void drawKeyboard(GameState* state, Rectangle keyboard_rect) {
@@ -393,6 +410,7 @@ void updateHangMan(GameState* state,int screen_width,int screen_height){
 
 void updateWinLoseMessage(GameState* state,int screen_width,int screen_height){
     if(replay_button_clicked){
+            winSoundPlayed= false; loseSoundPlayed=false;
             state->attempt = 0 ;
             state->keyboard = initKeyBoard();
             game_over=false;
