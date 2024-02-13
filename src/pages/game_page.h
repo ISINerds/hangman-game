@@ -10,8 +10,6 @@ bool game_over = false;
 bool win = true;
 bool isMouseOverBackButton;
 
-// contains the current state of the word
-
 bool compareString(char* s1,char* s2){
     int i=0,j=0;
     while(s1[i]!='\0'&&s2[j]!='\0'){
@@ -22,10 +20,8 @@ bool compareString(char* s1,char* s2){
     return true;
 }
 
+// contains the current state of the word
 void drawTop(GameState* state,Rectangle top_rect){
-    //circles
-    float circle_radius = 10.0f;
-    float circles_total_width = 6 * (circle_radius * 2 + 5); // Total width of all circles and gaps
 
     int w = GetRenderWidth();
     int h = GetRenderHeight();
@@ -61,18 +57,12 @@ void drawTop(GameState* state,Rectangle top_rect){
     char attempts[2];
     sprintf(attempts, "%d",(6 - state->attempt)%7);
 
-
-
-    //DrawText(attempts, hangman_rect.x + hangman_rect.width / 1.3 + screen_width/10 , hangman_rect.y - screen_height/5, 25, WHITE);
     DrawText(attempts, heartRect.x + w/35 , heartRect.y - h/55, h/22, PURPLE);
 
-    //state->curr_word_state = "_______";
-    // DrawRectangleRoundedLines(top_rect,0.2,1,1,ColorFromHSV(120,1,1));
     if(state->curr_word_state != NULL){
         int font_size= 50;
         int letter_spacing=w/48;
         int word_width = MeasureText(state->curr_word_state, font_size);
-        // int wordX = top_rect.x + circles_total_width + (top_rect.width-circles_total_width - word_width) / 2;
         int wordX= w/2.5;
         int wordY = (top_rect.height) / 2;
 
@@ -81,23 +71,20 @@ void drawTop(GameState* state,Rectangle top_rect){
             DrawText(TextFormat("%c", toupper(state->curr_word_state[i])), wordX + i * (letter_spacing + 20), wordY, h/20, WHITE);
         }
     }
-    // printf("comp  = %d , wtg = %s ,wcs= %s\n",compareString(state->curr_word_state,state->word_to_guess),state->word_to_guess,state->curr_word_state);
 }
 
 void drawWinLoseMessage(GameState* state, Rectangle keyboard_rect){
+    int w = GetRenderWidth();
+    int h = GetRenderHeight();
+    
     float roundness = 0.5f;
-    float width = keyboard_rect.width-0.5;
-    float height = keyboard_rect.height-0.5;
+    float width = keyboard_rect.width;
+    float height = keyboard_rect.height-0.1*h;
     float segments = 0.0f;
     float line_thick = 3.0f;
 
-    int w = GetRenderWidth();
-    int h = GetRenderHeight();
-    // Calculate the position of the rectangle to be in the middle of the window
+    // Calculate the position of the rectangle to be in the middle of the keyboard rectangle
     Rectangle rec = {keyboard_rect.x+(float)(keyboard_rect.width - width) / 2, keyboard_rect.y+(float)(keyboard_rect.height - height) / 2, width, height};
-
-    Color circle_colors[] = { green, yellow, orange, pink, blue, purple };
-
 
     DrawLine(560, 0, 560, keyboard_rect.height, Fade(black, 0.6f));
     DrawRectangle(560, 0, keyboard_rect.width - 500, keyboard_rect.height, Fade(black, 0.3f));
@@ -107,7 +94,7 @@ void drawWinLoseMessage(GameState* state, Rectangle keyboard_rect){
     
     const char* text =win?(state->mode==ONE_PLAYER?"YOU WON":"PLAYER2 WON"):(state->mode==ONE_PLAYER?"YOU LOST":"PLAYER2 LOST");
     Vector2 text_size = MeasureTextEx(GetFontDefault(), text, 30, 1);
-    float textX = rec.x + w/9;
+    float textX = (strlen(text)<=8)? rec.x+ w/8.4 : rec.x+w/17;
     float textY = rec.y + h/7;
     DrawText(text, textX, textY, h/14, pink);
     
@@ -115,17 +102,17 @@ void drawWinLoseMessage(GameState* state, Rectangle keyboard_rect){
     Vector2 text_size1 = MeasureTextEx(GetFontDefault(), text1, 5, 1);
     float text1X = rec.x + w/14;
     float text2Y = rec.y + h/3.5;
-    DrawText(text1, text1X, text2Y, h/14, WHITE);
+    DrawText(text1, text1X, text2Y, h/16, WHITE);
 
     const char* word = state->word_to_guess;
-    Vector2 word_size = MeasureTextEx(GetFontDefault(), word, 5, 1);
-    float wordX = (strlen(word)<=3) ? rec.x + w/(1.9*strlen(word)) : (strlen(word)<=5) ? rec.x + w/(1.55*strlen(word)): rec.x + w/(strlen(word));
-    float wordY = rec.y + h/2.5;
-    DrawText(word, wordX, wordY, h/14, WHITE);
+    float wordX = (strlen(word)<=3) ? rec.x + w/(1.9*strlen(word)) : (strlen(word)<=6) ? rec.x + w/(1.36*strlen(word))+1.5: rec.x + w/(0.9*strlen(word));
+    float wordY = rec.y + h/2.8;
+    DrawText(word, wordX, wordY, h/16, WHITE);
 
     //circles
+    Color circle_colors[] = { green, yellow, orange, pink, blue, purple };
     float circle_radius = h/50;
-    float centerX = textX + w/8.5;
+    float centerX = rec.x + w/4.7;
     float centerY = rec.y + h/15;
 
     float total_width = 6 * (circle_radius * 2 + 5); // Total width of all circles and gaps
@@ -137,8 +124,8 @@ void drawWinLoseMessage(GameState* state, Rectangle keyboard_rect){
         DrawCircle(circleX, centerY, circle_radius, circle_colors[i]);
     }
 
-    Rectangle button_rec = { rec.x + w/6.8, rec.y + h/2.2 + 20, 100, 50 };
-
+    //replay button
+    Rectangle button_rec = { rec.x + w/6.8, rec.y + h/2.3 + 20, w*0.15,50};
     DrawRectangleRec(button_rec, dark_blue);
     DrawText("REPLAY !", button_rec.x, button_rec.y + 7, h/18, yellow);
 
@@ -216,7 +203,6 @@ void drawKeyboard(GameState* state, Rectangle keyboard_rect) {
             kk++;
         }
     }
-    // }
 }
 void drawHangMan(GameState* state, Rectangle hangman_rect, int screen_width, int screen_height) {
     if (state->attempt >= 0 && state->attempt <= 6) {
@@ -229,15 +215,9 @@ void drawHangMan(GameState* state, Rectangle hangman_rect, int screen_width, int
             (Vector2){ hangman_rect.width / 20, hangman_rect.height / 20 }, // Adjust the division factor here
             0.0f,
             WHITE);
-    } else {
-        // printf("Invalid attempt value: %d\n", state->attempt);
-        // printf("Not Implemented \n");
-        // exit(1);
-    }
+    } 
 }
 void drawGamePage(GameState* state,int screen_width,int screen_height){
-    // DrawRectangle(screen_width/4, screen_height/4, screen_width/2, screen_height/2, GREEN);
-    // DrawText("Game page", screen_width/4, screen_height/4, 20, WHITE);
     Rectangle top_rect = {
         .x = (screen_width*0.05),
         .y = (screen_height*0.04),
@@ -245,7 +225,6 @@ void drawGamePage(GameState* state,int screen_width,int screen_height){
         .height = screen_height*0.125,
     };
     drawTop(state,top_rect);
-    // TODO MAHA
     Rectangle keyboard_rect = {
         .x = (screen_width*0.05) + screen_width*0.4 + (screen_width*0.05),
         .y = (screen_height*0.04) + screen_height*0.125 + (screen_height*0.04),
@@ -403,7 +382,7 @@ void updateWinLoseMessage(GameState* state,int screen_width,int screen_height){
                 return;
             }
             char* chosen_word = getRandomWord(state->game_difficulty, state->word_list);
-            printf("game diff = %d\n",state->game_difficulty);
+            // printf("game diff = %d\n",state->game_difficulty);
             state->word_to_guess=chosen_word;
             int len = strlen(chosen_word);
             state->curr_word_state=(char*)malloc((len + 1)*sizeof(char));
@@ -423,12 +402,4 @@ void updateGamePage(GameState* state,int screen_width,int screen_height){
     }else {
         updateWinLoseMessage(state, screen_width,screen_height);
     }
-    // char *msg1, *msg2;
-    // msg1 = (char*)malloc(sizeof(char)*100);
-    // msg2 = (char*)malloc(sizeof(char)*100);
-    // getEndGameMessages(state, 6, msg1, msg2);
-    
-    // if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-    //     state->current_page=WELCOME_PAGE;
-    // }
 }
