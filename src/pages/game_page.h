@@ -396,6 +396,7 @@ void updateWinLoseMessage(GameState* state,int screen_width,int screen_height){
             state->attempt = 0 ;
             state->keyboard = initKeyBoard();
             game_over=false;
+            win=true;
             replay_button_clicked=false;
             if(state->mode==TWO_PLAYERS){
                 state->current_page=ENTER_WORD_PAGE;
