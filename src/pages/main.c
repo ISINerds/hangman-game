@@ -52,6 +52,7 @@ int main(void){
         .attempt=0,
         .word_list=words,
     };
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Hangman");
     InitAudioDevice();
     setTextBoxStyles();
