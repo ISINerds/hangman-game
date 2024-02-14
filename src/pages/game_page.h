@@ -133,7 +133,8 @@ void drawWinLoseMessage(GameState* state, Rectangle keyboard_rect){
 
     const char* word = state->word_to_guess;
     int wl = strlen(word);
-    float wordX = (wl<=2)? rec.x+w/(2.9*wl) : (wl=3) ? rec.x + w/(1.9*wl) : (wl<=6) ? rec.x + w/(1.36*wl)+1.5: rec.x + w/(0.9*wl);
+    // float wordX = (wl<=2)? rec.x+w/(2.9*wl) : (wl=3) ? rec.x + w/(1.9*wl) : (wl<=6) ? rec.x + w/(1.36*wl)+1.5: rec.x + w/(0.9*wl);
+    float wordX = rec.x + (rec.width - MeasureText(word, h/14)) / 2;
     float wordY = text2Y + h/10;
     DrawText(word, wordX, wordY, h/16, WHITE);
 
@@ -172,7 +173,6 @@ void drawWinLoseMessage(GameState* state, Rectangle keyboard_rect){
 }
 
 void drawKeyboard(GameState* state, Rectangle keyboard_rect) {
-    
     int width = keyboard_rect.width;
     int height = keyboard_rect.height;
     int padding = width * 0.05;
@@ -228,7 +228,6 @@ void drawKeyboard(GameState* state, Rectangle keyboard_rect) {
                         .height=letterRect.height + 4,
                     },0.8,1,(Color){.r=0x00,.g=0xb2,.b=0x0d,.a=255});
                     DrawRectangleRoundedLines(letterRect, 0.8, 1, 3, (Color){.r=0x51,.g=0x69,.b=0xA2,.a=255});
-
                 }
             }
             int fontSize = (lett_width < lett_height) ? lett_width / 2 : lett_height / 2;
@@ -364,6 +363,8 @@ void updateKeyboard(GameState* state,int screen_width,int screen_height){
                 getletterIndex(arr_pos,0,(char)((state->keyboard).keys[kk].character+('a'-'A')),state->word_to_guess,state->root);
                 int ok=0;
                 for(int i=0;i<n;i++){
+                    printf("%d ",arr_pos[i]);
+                    printf("\n");
                     if(arr_pos[i]){
                         (state->curr_word_state)[i]=(state->keyboard).keys[kk].character;
                         ok=1;
