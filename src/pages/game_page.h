@@ -9,6 +9,9 @@ bool replay_button_clicked = false;
 bool game_over = false;
 bool win = true;
 bool isMouseOverBackButton;
+int nb_words = 1;
+int nb_guessed_words = 0;
+bool score_incremented = false;
 
 bool compareString(char* s1,char* s2){
     int i=0,j=0;
@@ -79,10 +82,12 @@ void drawWinLoseMessage(GameState* state, Rectangle keyboard_rect){
     
     float roundness = 0.5f;
     float width = keyboard_rect.width;
-    float height = keyboard_rect.height-0.1*h;
+    float height = keyboard_rect.height;
     float segments = 0.0f;
     float line_thick = 3.0f;
 
+    float line_spacing = h/8;
+    
     // Calculate the position of the rectangle to be in the middle of the keyboard rectangle
     Rectangle rec = {keyboard_rect.x+(float)(keyboard_rect.width - width) / 2, keyboard_rect.y+(float)(keyboard_rect.height - height) / 2, width, height};
 
@@ -92,23 +97,6 @@ void drawWinLoseMessage(GameState* state, Rectangle keyboard_rect){
     DrawRectangleRounded(rec, roundness, (int)segments, Fade(dark_blue, 0.2f));
     DrawRectangleRoundedLines(rec, roundness, (int)segments, line_thick, Fade(gray, 0.4f));
     
-    const char* text =win?(state->mode==ONE_PLAYER?"YOU WON":"PLAYER2 WON"):(state->mode==ONE_PLAYER?"YOU LOST":"PLAYER2 LOST");
-    Vector2 text_size = MeasureTextEx(GetFontDefault(), text, 30, 1);
-    float textX = (strlen(text)<=8)? rec.x+ w/8.4 : rec.x+w/17;
-    float textY = rec.y + h/7;
-    DrawText(text, textX, textY, h/14, pink);
-    
-    const char* text1 = "THE WORD WAS";
-    Vector2 text_size1 = MeasureTextEx(GetFontDefault(), text1, 5, 1);
-    float text1X = rec.x + w/14;
-    float text2Y = rec.y + h/3.5;
-    DrawText(text1, text1X, text2Y, h/16, WHITE);
-
-    const char* word = state->word_to_guess;
-    float wordX = (strlen(word)<=3) ? rec.x + w/(1.9*strlen(word)) : (strlen(word)<=6) ? rec.x + w/(1.36*strlen(word))+1.5: rec.x + w/(0.9*strlen(word));
-    float wordY = rec.y + h/2.8;
-    DrawText(word, wordX, wordY, h/16, WHITE);
-
     //circles
     Color circle_colors[] = { green, yellow, orange, pink, blue, purple };
     float circle_radius = h/50;
@@ -117,17 +105,43 @@ void drawWinLoseMessage(GameState* state, Rectangle keyboard_rect){
 
     float total_width = 6 * (circle_radius * 2 + 5); // Total width of all circles and gaps
 
-    float circlesY = textY - 30.0f; 
+    float circlesY = centerY+line_spacing - 30.0f; 
 
     for (int i = 0; i < 6; ++i) {
         float circleX = centerX - total_width / 2 + i * (circle_radius * 2 + 5);
         DrawCircle(circleX, centerY, circle_radius, circle_colors[i]);
     }
 
+    //messages
+    const char* text =win?(state->mode==ONE_PLAYER?"YOU WON":"PLAYER2 WON"):(state->mode==ONE_PLAYER?"YOU LOST":"PLAYER2 LOST");
+    Vector2 text_size = MeasureTextEx(GetFontDefault(), text, 30, 1);
+    float textX = (strlen(text)<=8)? rec.x+ w/8.4 : rec.x+w/17;
+    float textY = centerY + line_spacing/2;
+    DrawText(text, textX, textY, h/14, pink);
+    
+    const char* text1 = "THE WORD WAS";
+    Vector2 text_size1 = MeasureTextEx(GetFontDefault(), text1, 5, 1);
+    float text1X = rec.x + w/14;
+    float text2Y = textY+ line_spacing;
+    DrawText(text1, text1X, text2Y, h/16, WHITE);
+
+    const char* word = state->word_to_guess;
+    int wl = strlen(word);
+    float wordX = (wl<=2)? rec.x+w/(2.9*wl) : (wl=3) ? rec.x + w/(1.9*wl) : (wl<=6) ? rec.x + w/(1.36*wl)+1.5: rec.x + w/(0.9*wl);
+    float wordY = text2Y + h/10;
+    DrawText(word, wordX, wordY, h/16, WHITE);
+
+    //score
+    char * score_text[50];
+    snprintf(score_text,50,"SCORE: %d/%d",nb_guessed_words,nb_words);
+    float scoreX = rec.x+w/9;
+    float scoreY= wordY+line_spacing;
+    DrawText(score_text,scoreX , scoreY, h/16, WHITE);
+
     //replay button
-    Rectangle button_rec = { rec.x + w/6.8, rec.y + h/2.3 + 20, w*0.15,50};
+    Rectangle button_rec = { rec.x + w/6.8, scoreY+line_spacing, w*0.15,50};
     DrawRectangleRec(button_rec, dark_blue);
-    DrawText("REPLAY !", button_rec.x, button_rec.y + 7, h/18, yellow);
+    DrawText("REPLAY !", button_rec.x, button_rec.y, h/18, yellow);
 
      if (CheckCollisionPointRec(GetMousePosition(), button_rec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         replay_button_clicked = true;
@@ -250,6 +264,11 @@ void updateTop(GameState* state,int screen_width,int screen_height){
         game_over=true;
         if(compareString(state->curr_word_state,state->word_to_guess)==0){
             win=false;
+        }else {
+            if(!score_incremented){
+                nb_guessed_words++;
+                score_incremented=true;
+            }
         }
     }
     if (isMouseOverBackButton && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
@@ -257,6 +276,9 @@ void updateTop(GameState* state,int screen_width,int screen_height){
         state->keyboard = initKeyBoard();
         game_over=false;
         replay_button_clicked=false;
+        score_incremented=false;
+        nb_guessed_words=0;
+        nb_words=1;
         state->current_page=MODE_SELECTION;
     }
 }
@@ -376,6 +398,8 @@ void updateWinLoseMessage(GameState* state,int screen_width,int screen_height){
             state->keyboard = initKeyBoard();
             game_over=false;
             win=true;
+            nb_words++;
+            score_incremented=false;
             replay_button_clicked=false;
             if(state->mode==TWO_PLAYERS){
                 state->current_page=ENTER_WORD_PAGE;
