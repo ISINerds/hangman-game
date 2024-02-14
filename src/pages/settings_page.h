@@ -83,11 +83,13 @@ void drawSettingsPage(GameState* state,int screenWidth,int screenHeight){
             if (!wasHoveringDifficulty) {
                 PlaySound(click_sound);
             }
+            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
             wasHoveringDifficulty = true;
         } else {
             if (wasHoveringDifficulty) {
                 StopSound(click_sound);
             }
+            SetMouseCursor(MOUSE_CURSOR_DEFAULT);
             wasHoveringDifficulty = false;
         }
 }
@@ -105,6 +107,7 @@ void updateSettingsPage(GameState* state,int screen_width,int screen_height){
         for(int i=0;i<len;i++)underscores[i]='_';
         strcpy(state->curr_word_state,underscores);
         printf("The chosen word is : %s \n", chosen_word);
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
         state->game_difficulty=EASY;
         state->current_page=GAME_PAGE;
     }
@@ -117,6 +120,7 @@ void updateSettingsPage(GameState* state,int screen_width,int screen_height){
         for(int i=0;i<len;i++)underscores[i]='_';
         strcpy(state->curr_word_state,underscores);
         printf("The chosen word is : %s \n", chosen_word);
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
         state->game_difficulty=MEDIUM;
         state->current_page=GAME_PAGE;
     }
@@ -129,6 +133,7 @@ void updateSettingsPage(GameState* state,int screen_width,int screen_height){
         for(int i=0;i<len;i++)underscores[i]='_';
         strcpy(state->curr_word_state,underscores);
         printf("The chosen word is : %s \n", chosen_word);
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
         state->game_difficulty=HARD;
         state->current_page=GAME_PAGE;
     }

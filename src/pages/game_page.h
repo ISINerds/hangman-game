@@ -149,7 +149,12 @@ void drawWinLoseMessage(GameState* state, Rectangle keyboard_rect){
     Rectangle button_rec = { rec.x + w/6.8, scoreY+line_spacing, w*0.15,50};
     DrawRectangleRec(button_rec, dark_blue);
     DrawText("REPLAY !", button_rec.x, button_rec.y, h/18, yellow);
-
+    
+    if(CheckCollisionPointRec(GetMousePosition(), button_rec)){
+        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+    }else{
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+    }
      if (CheckCollisionPointRec(GetMousePosition(), button_rec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         replay_button_clicked = true;
     } else {

@@ -4,7 +4,6 @@
 void drawWelcomePage(GameState* state,int screen_width,int screen_height);
 void updateWelcomePage(GameState* state,int screen_width,int screen_height);
 
-bool start_button_clicked = false;
 
 Color black = (Color){ 0,0,0, 255 };
 Color gray = (Color){ 81,105,162, 255 };
@@ -72,10 +71,10 @@ void drawWelcomePage(GameState* state,int screen_width,int screen_height){
     Rectangle button_rec = { rec.x + w/3.2, rec.y + h/3 + 10, 100, 50 };
 
     // Check if the mouse button is pressed within the button boundaries
-    if (CheckCollisionPointRec(GetMousePosition(), button_rec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-        start_button_clicked = true;
+    if (CheckCollisionPointRec(GetMousePosition(), button_rec)) {
+        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
     } else {
-        start_button_clicked = false;
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
     }
 
     DrawRectangleRec(button_rec, dark_blue);
@@ -83,6 +82,10 @@ void drawWelcomePage(GameState* state,int screen_width,int screen_height){
 }
 
 void updateWelcomePage(GameState* state,int screen_width,int screen_height){
-    if(start_button_clicked) state->current_page=MODE_SELECTION;
-
+    Rectangle rec = {screen_width/7, screen_height/4, 0.7*screen_width, 0.3*screen_height};
+    Rectangle button_rec = { rec.x + screen_width/3.2, rec.y + screen_height/3 + 10, 100, 50 };
+    if(CheckCollisionPointRec(GetMousePosition(), button_rec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+        state->current_page=MODE_SELECTION;
+    }
 }
