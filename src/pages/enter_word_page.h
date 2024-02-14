@@ -7,7 +7,7 @@ void updateEnterWordPage(GameState* state,int screen_width,int screen_height);
 bool show_popup=false;
 bool empty_message=false;
 bool ewp_is_mouse_over_back_button=false;
-bool allAlpha(const char *text_input) {
+bool ewAllAlpha(const char *text_input) {
     for (int i = 0; text_input[i] != '\0'; i++) {
         if (!isalpha(text_input[i]))return false;
     }
@@ -28,7 +28,6 @@ void drawEnterWordPage(GameState* state,int screen_width,int screen_height){
     Vector2 mousePosition = GetMousePosition();
 
     ewp_is_mouse_over_back_button = CheckCollisionPointRec(mousePosition, (Rectangle){30,0,60,60});
-// ----------
     const int textSize= screen_height/13;
     float roundness = 0.5f;
     Color Darkblue = (Color){26, 31, 68, 255}; 
@@ -90,7 +89,7 @@ void updateEnterWordPage(GameState* state,int screen_width,int screen_height){
     };
 
     if(CheckCollisionPointRec(GetMousePosition(), go_button)&&IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
-        if(text_input[0]!='\0'&&allAlpha(text_input)){
+        if(text_input[0]!='\0'&&ewAllAlpha(text_input)){
             for (int i = 0; text_input[i]; i++) {
                 text_input[i] = tolower(text_input[i]);
             }
