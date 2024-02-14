@@ -60,6 +60,8 @@ int main(void){
     fail_sound = LoadSound("./assets/sound/fail.mp3");
     heart_beating = LoadSound("./assets/sound/heart_beating.mp3");
     click_sound = LoadSound("./assets/sound/click-button.mp3");
+    win_sound= LoadSound("./assets/sound/win.mp3");
+    wah_sound = LoadSound("./assets/sound/wah-wah.mp3");
     for(int i=0;i<7;i++){
         char filePath[50];
         snprintf(filePath, sizeof(filePath), "./assets/images/Hangman/hangman%d.png",i);
