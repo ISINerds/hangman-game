@@ -2,7 +2,7 @@
 #include "./state.h"
 
 void drawModeSelectionPage(GameState* state);
-void updateModeSelectionPage(GameState* state);
+void updateModeSelectionPage(GameState* state,int w,int h);
 
 bool isMouseOver1Player;
 bool isMouseOver2Players;
@@ -53,34 +53,39 @@ void drawModeSelectionPage(GameState* state) {
                 (Vector2){ graphRect.width / 5, graphRect.height / 5 },
                 0.0f,
                 WHITE);     
-
-    isMouseOver1Player = CheckCollisionPointRec(mousePosition, oneplayerRect);
-    isMouseOver2Players = CheckCollisionPointRec(mousePosition, twoplayersRect);
-    isMouseOverGraph = CheckCollisionPointRec(mousePosition, graphRect);                    
     //DrawTextureRec(oneplayer_texture, oneplayerRect, (Vector2){ oneplayerRect.x, oneplayerRect.y }, WHITE);
-    if (isMouseOver1Player || isMouseOver2Players || isMouseOverGraph) {
+    if (CheckCollisionPointRec(mousePosition,oneplayerRect) || CheckCollisionPointRec(mousePosition,twoplayersRect) || CheckCollisionPointRec(mousePosition,graphRect)) {
         if (!wasHovering) {
             PlaySound(click_sound);
         }
         wasHovering = true;
+        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
     } else {
         if (wasHovering) {
             StopSound(click_sound);
         }
         wasHovering = false;
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
     }
 }
 
-void updateModeSelectionPage(GameState* state) {
-    if (isMouseOver1Player && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+void updateModeSelectionPage(GameState* state,int w, int h) {
+    Rectangle oneplayerRect = { w/5, h/5.5 + h*0.2 + h/10, w/10, h/4 };
+    Rectangle twoplayersRect = { w/5 + 2*w/10 + w/12 , h/5.5 + h*0.2 + h/10, w/8, h/4 };
+    Rectangle graphRect = { w/5 + 2*w/5 + w/8 , h/5.5 + h*0.2 + h/10, w/8, h/4 };
+
+    if (CheckCollisionPointRec(GetMousePosition(),oneplayerRect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
         state->current_page = SETTINGS_PAGE;
         state->mode = ONE_PLAYER;
     }
-    else if(isMouseOver2Players && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+    else if(CheckCollisionPointRec(GetMousePosition(),twoplayersRect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
         state->current_page=ENTER_WORD_PAGE;
         state->mode = TWO_PLAYERS;
     }
-    else if (isMouseOverGraph && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+    else if (CheckCollisionPointRec(GetMousePosition(),graphRect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
         state->current_page=GRAPH_PAGE;
         state->mode = GRAPH;
     }

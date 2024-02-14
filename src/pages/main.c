@@ -97,7 +97,7 @@ int main(void){
                 break;
 
             case MODE_SELECTION:
-                updateModeSelectionPage(&state);
+                updateModeSelectionPage(&state,w,h);
                 break;
             case ENTER_WORD_PAGE:
                 updateEnterWordPage(&state,w,h);
@@ -142,6 +142,14 @@ int main(void){
     }
     UnloadTexture(blood_image);
     UnloadTexture(back_button);
+    
+    UnloadSound(success_sound);
+    UnloadSound(fail_sound);
+    UnloadSound(heart_beating);
+    UnloadSound(click_sound);
+    UnloadSound(win_sound);
+    UnloadSound(wah_sound);
+
     CloseWindow();
     return 0;
 }
