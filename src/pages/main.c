@@ -2,7 +2,6 @@
 #include "../includes/utils/file_parsing.h"
 #include "../includes/data-structures/binary_tree.h"
 #include "../includes/data-structures/trie.h"
-// TODO : refactor the includes
 #include "./state.h"
 #include "./welcome_page.h"
 #include "./settings_page.h"
@@ -31,10 +30,7 @@ void setTextBoxStyles(){
     GuiSetStyle(TEXTBOX, TEXT_COLOR_DISABLED, 0x000000FF);
     GuiSetStyle(TEXTBOX, TEXT_COLOR_FOCUSED, 0x000000FF);
     GuiSetStyle(TEXTBOX, TEXT_COLOR_PRESSED, 0x000000FF);
-    // GuiSetStyle(TEXTBOX, BASE_COLOR_DISABLED, 0x000000FF);
-    // GuiSetStyle(TEXTBOX, BASE_COLOR_FOCUSED, 0x000000FF);
-    // GuiSetStyle(TEXTBOX, BASE_COLOR_NORMAL, 0x000000FF);
-    // GuiSetStyle(TEXTBOX, BASE_COLOR_PRESSED, 0x000000FF);
+    
 }
 
 void setPopUpStyles(){

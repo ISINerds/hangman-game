@@ -173,9 +173,7 @@ BinaryTree* convertTrieToBT (Trie* trie) {
                                 nextBT->right_child= NULL;
                                 break;
                             }
-                            //nextBT= convertTrieToBT(trie->array_node_sons[j]);
-                            //nextBT->right_child = convertTrieToBT(getFirstRightLeftChild(j+1,0,trie->array_node_sons));
-                            //nextBT->right_child = convertTrieToBT(getFirstRightLeftChild(j,0,trie->array_node_sons));
+                            
                             nextBT->right_child = convertTrieToBT(trie->array_node_sons[j]);
 
                             if(nextBT->right_child != NULL) {
@@ -216,9 +214,7 @@ BinaryTree* convertTrieListToBT (Trie** array_roots) {
         BT = convertTrieToBT(trie_first_left_child);
         printf("first index : %d \n", i);
         printf("data : %c \n", BT->data);
-        // if(i==25) {
-        //     BT->right_child = NULL;
-        // }
+        
         if(i<25) {
             BinaryTree* newBT = BT;
             while(i<=25) {

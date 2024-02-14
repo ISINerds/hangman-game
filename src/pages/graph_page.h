@@ -193,7 +193,7 @@ void updateGraphPage(GameState* state,int screen_width,int screen_height){
     }
     if(gp_is_mouse_over_back_button&&IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
         gp_show_popup=false;
-        one_time=false;
+        one_time=true;
         is_dragging = false;
         gp_empty_message=false;
         gp_word_dont_exist = false;

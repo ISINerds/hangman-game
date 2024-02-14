@@ -11,14 +11,11 @@ struct BinaryTree{
     BinaryTree* right_child;
 };
 int counter=0;
-#include "./queue.h"
-// ------------------------------functions signitures------------------------
+
 BinaryTree* addWordToBinaryTree(const char* word,BinaryTree* root);
 void printBinaryTree(BinaryTree* root,int* cc);
 
-// -------------------------------end functions signitures---------------------
 
-// =-------------------------------------------maha--------------------------
 BinaryTree* createNode(char data, BinaryTree* left_child, BinaryTree* right_child){
   BinaryTree* node;
   node = (BinaryTree*) malloc(sizeof(BinaryTree));
@@ -59,6 +56,7 @@ BinaryTree* addWordToBinaryTree(const char *word, BinaryTree* binary_tree){
   return binary_tree;
 }
 
+//initialize an array to store the letter indexes of a letter
 int * initiliazePosArray(int size) {
     int* array = (int*) malloc (size * sizeof(int));
     for(int i=0; i<size ; i++) {
@@ -67,6 +65,9 @@ int * initiliazePosArray(int size) {
     return array;
 }
 
+//function to get the letter different indexes of a letter in a word 
+//result is an array of 0 and 1  where 0 means that the letter isn't present at this index  
+//and 1 means that it is.
 int* getletterIndex(int * array_pos ,int index, char letter, char* word, BinaryTree* BT) {
     if(BT == NULL) return array_pos;
     if ( (index==0) && (word[0] < BT->data) ) return array_pos;
@@ -90,9 +91,9 @@ int* getletterIndex(int * array_pos ,int index, char letter, char* word, BinaryT
 }
 
 int search_word(BinaryTree* root,char *word){
-  if((root == NULL)||(root->data > word[0])) return 0;
+  if((root == NULL)||(root->data > word[0])) return 0; //does not exist 
   if(word[0] == root->data){
-    if(word[0] == '\0') return 1;
+    if(word[0] == '\0') return 1; // exists
     return search_word(root->left_child,word+1);
   }
   return search_word(root->right_child,word);
@@ -109,64 +110,6 @@ int compareArrayToString(int* array, const char* str) {
         return 1; //true
     }
 
-// int search_word(char *word, BinaryTree *binary_tree, Queue* q){
-//   if((binary_tree == NULL)||(word[0] < binary_tree->data)) return 0;
-//   printf("%c \t",binary_tree->data);
-//   enqueue(q, binary_tree);
-//   if(word[0] == binary_tree->data){
-//     if(word[0] == '\0') return 1;
-//     return search_word(word+1, binary_tree->left_child, q);
-//   }
-//   return search_word(word, binary_tree->right_child,q);
-// }
-
-
-// void letter_index(Queue *q, char c){
-//     int i=-1;
-//     int exist=-1;
-//     QueueNode *p = q->front;
-//     while(p->next!=NULL){
-//         if(p->next->node_data==p->left_child_data){
-//             i++;
-//             if(p->node_data==c) {
-//                 printf("letter %c exists at index %d\n",c,i);
-//                 exist=1;
-//             }
-//         }
-//         p=p->next;
-//     }
-//     if(exist==-1){
-//         printf("letter %c does not exist\n",c);
-//     }
-// }
-
-
-// void test (){
-//     BinaryTree* bt=NULL; 
-//     const char *words[] = {"do", "desert", "ce","ces","ci","casse"};
-//     for(int i=0; i < sizeof(words) / sizeof(words[0]);i++){
-//         bt=addWordToBinaryTree(words[i],bt);
-//     }  
-//     char letters[] = {'c', 'd', 'e', 'i', 'o', 's','a'}; 
-//     for(int i=0; i < sizeof(words) / sizeof(words[0]);i++){
-//         printf("-------------------------\n");
-//         printf("Word = %s \n",words[i]);
-//         Queue* q = (Queue*)malloc(sizeof(Queue));
-//         q->front = q->rear = NULL;
-//         printf("path: ");
-//         int word_exist = search_word(words[i],bt,q);
-//         printf("\n");
-//         if(word_exist!=0){
-//             for(int i=0; i < sizeof(letters) / sizeof(letters[0]);i++){
-//                 letter_index(q,letters[i]);
-//             }
-//         }
-//     }
-// }
-
-// --------------------------------------------hajji--------------------------
-
-
 BinaryTree* addWords(WordList words,BinaryTree* root){
     for(int i=0;i<words.words_array_size;i++){
         root = addWordToBinaryTree(words.words_array[i].word,root);
@@ -178,7 +121,6 @@ BinaryTree* removeWord(BinaryTree* root,BinaryTree* parent,const char* word){
     if((root == NULL)||(root->data > word[0])) return root;
     if(word[0] == root->data){
         root->left_child=removeWord(root->left_child,root,word+1);
-        // printf("me = %c, parent = %c\n",root->data,parent->data);
         if(parent->left_child==root){
             if(root->left_child==NULL && root->right_child==NULL){
                 parent->left_child=NULL;
@@ -200,13 +142,13 @@ BinaryTree* removeWord(BinaryTree* root,BinaryTree* parent,const char* word){
                 return parent->right_child;
             }
         }
-        // root->data='-';
         return root;
     }
     root->right_child=removeWord(root->right_child,root,word);
     return root;
 }
 
+//binary tree graph generation
 void printBinaryTreeToFile(FILE* file, BinaryTree* root,int* cc){
     if(root->left_child!=NULL){
         if(root->data=='\0'){
@@ -256,6 +198,7 @@ void printBinaryTreeToFile(FILE* file, BinaryTree* root,int* cc){
     if(root->left_child!=NULL)printBinaryTreeToFile(file,root->left_child,cc);
     if(root->right_child!=NULL)printBinaryTreeToFile(file,root->right_child,cc);
 }
+
 int generateImageFromBinaryTree(BinaryTree *root, const char* output_file_name_without_extension, const char* tree_parser_path) {
     char output_file_name[256];
     snprintf(output_file_name, sizeof(output_file_name), "%s.dot", output_file_name_without_extension);
@@ -293,17 +236,3 @@ int generateImageFromBinaryTree(BinaryTree *root, const char* output_file_name_w
 
     return EXIT_SUCCESS;
 }
-// #include<stdio.h>
-// #include "./includes/data-structures/binary_tree.h"
-// int main(void){
-//     BinaryTree* root=NULL;
-//     root=addWord(root,"cas");
-//     root=addWord(root,"ce");
-//     root=addWord(root,"ces");
-//     root=addWord(root,"ci");
-//     root=addWord(root,"de");
-//     root=addWord(root,"des");
-//     root=addWord(root,"do");
-//     generateImageFromBinaryTree(root);
-//     return 0;
-// }

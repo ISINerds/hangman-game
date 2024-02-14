@@ -33,7 +33,7 @@ This project relies on Raylib and raygui libraries for graphics and input handli
 
     
 
-    make install_raylib && make install_raygui
+    make install_raylib && make install_raygui && make install_criterion
     
 -Compile the Project:
     
@@ -50,7 +50,8 @@ This project relies on Raylib and raygui libraries for graphics and input handli
 -Run Tests:
     
     
-    
     make run_test
 
+-Clean the test:
 
+    make clean_test

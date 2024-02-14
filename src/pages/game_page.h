@@ -34,6 +34,8 @@ void drawTop(GameState* state,Rectangle top_rect){
 
     int w = GetRenderWidth();
     int h = GetRenderHeight();
+
+    //back button
     DrawTexturePro(back_button,
                 (Rectangle){ 0, 0, (float)back_button.width, (float)back_button.height },
                 (Rectangle){30,0,60,60},
@@ -45,6 +47,7 @@ void drawTop(GameState* state,Rectangle top_rect){
 
     isMouseOverBackButton = CheckCollisionPointRec(mousePosition, (Rectangle){30,0,60,60});
 
+    //heart
     float scaleFactor = 0.5f + 0.5f * sinf(GetTime() * (state->attempt+4)); // Adjust the speed of pulsation with the multiplier
     Rectangle heartRect = {
         top_rect.x + top_rect.width / 1.2,
@@ -68,6 +71,7 @@ void drawTop(GameState* state,Rectangle top_rect){
 
     DrawText(attempts, heartRect.x + w/35 , heartRect.y - h/55, h/22, PURPLE);
 
+    //current word state
     if(state->curr_word_state != NULL){
         int font_size= 50;
         int letter_spacing=w/48;
@@ -160,6 +164,8 @@ void drawWinLoseMessage(GameState* state, Rectangle keyboard_rect){
     } else {
         replay_button_clicked = false;
     }
+
+    //play win and lose sounds
     if(game_over && win && !winSoundPlayed){
         if(IsSoundPlaying(heart_beating)) StopSound(heart_beating);
         if(!IsSoundPlaying(win_sound)) {
@@ -195,7 +201,6 @@ void drawKeyboard(GameState* state, Rectangle keyboard_rect) {
                 .width = lett_width,
                 .height = lett_height
             };
-            // printf("%c\n",);
             if (CheckCollisionPointRec(GetMousePosition(), letterRect)&&(state->keyboard).keys[kk].state == KEY_NOT_CLICKED) {
                 DrawRectangleRounded(
                     (Rectangle){
