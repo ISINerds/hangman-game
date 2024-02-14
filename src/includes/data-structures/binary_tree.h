@@ -71,7 +71,11 @@ int* getletterIndex(int * array_pos ,int index, char letter, char* word, BinaryT
     if(BT == NULL) return array_pos;
     if ( (index==0) && (word[0] < BT->data) ) return array_pos;
     if(BT->data == '\0') {
-        return array_pos;
+        if(BT->left_child==NULL && BT->right_child==NULL){
+            return array_pos;
+        }else{
+            return getletterIndex(array_pos, index, letter, word, BT->right_child);
+        }
     }
     if(word[0] == BT->data) {
         if(letter==BT->data) {
